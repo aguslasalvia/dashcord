@@ -1,0 +1,10 @@
+fastapi
+pymongo
+python-dotenv
+uvicorn
+pyjwt
+motor
+yt-search
+httpx==0.24.1
+youtube-search-python
+bcrypt
