@@ -1,5 +1,6 @@
 "use client"
 import Sidebar from "@/components/Sidebar/Sidebar";
+import { PlayerProvider } from "@/components/Player/Player";
 import "./layout.css"
 
 export default function RootLayout({
@@ -8,16 +9,13 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-
-		<div className="dashboard-layout" >
-			<Sidebar />
-			<main className="dashboard-main">
-				{children}
-			</main>
-		</div >
-
+		<PlayerProvider>
+			<div className="dashboard-layout">
+				<Sidebar />
+				<main className="dashboard-main">
+					{children}
+				</main>
+			</div>
+		</PlayerProvider>
 	);
 }
-
-
-

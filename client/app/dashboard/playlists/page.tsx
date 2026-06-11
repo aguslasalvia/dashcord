@@ -74,28 +74,32 @@ export default function Page() {
 
 
 	return (<>
-		<header className="playlists-dashboard-header">
-			<span>Welcome</span>
+		<header className="playlists-page-header">
+			<div>
+				<h1 className="playlists-page-title">Your <em>library</em></h1>
+				<p className="playlists-page-subtitle">{playlistList.length} {playlistList.length === 1 ? "playlist" : "playlists"}</p>
+			</div>
 		</header>
-		<section className="music-list-section">
-			<div className="playlists-music-list-header">
-				<h2>Playlists</h2>
-				<div className="playlists-search-container">
+		<section>
+			<div className="playlists-toolbar">
+				<div className="playlists-search-wrap">
+					<i className="bi bi-search"></i>
 					<input
 						type="text"
 						id="search-bar"
 						className="playlists-search-bar"
-						placeholder="Search playlist by name..."
+						placeholder="Search by name…"
 						list="playlist-names"
 					/>
-					<button
-						className="playlists-add-playlist-btn"
-						onClick={handleAddPlaylist}
-						title="Create new playlist"
-					>
-						<i className="bi bi-plus-lg"></i>
-					</button>
 				</div>
+				<button
+					className="playlists-add-playlist-btn"
+					onClick={handleAddPlaylist}
+					title="Create new playlist"
+				>
+					<i className="bi bi-plus-lg"></i>
+					<span>New playlist</span>
+				</button>
 				<datalist id="playlist-names">
 					{playlistList.map((playlist, index) => <option key={index} value={playlist.name} />)}
 				</datalist>
@@ -103,14 +107,14 @@ export default function Page() {
 			<div className="playlists-music-grid" id="music-grid">
 				{
 					loading ? (
-						<div className="song-card empty">Loading playlists...</div>
+						<div className="playlists-empty">Loading playlists…</div>
 					) : playlistList.length > 0 ? (
 						playlistList.map((playlist: any, index) => {
 							let cover = playlist.cover;
 							if ((!cover || cover === "") && playlist.songs && playlist.songs.length > 0) {
 								const youtube_id = playlist.songs[0].youtube_id;
 								if (youtube_id) {
-									cover = `https://img.youtube.com/vi/${youtube_id}/hqdefault.jpg`;
+									cover = `https://img.youtube.com/vi/${youtube_id}/mqdefault.jpg`;
 								}
 							}
 							if (!cover) {
@@ -122,12 +126,13 @@ export default function Page() {
 									title={playlist.name}
 									created={playlist.created_by}
 									cover={cover}
+									firstSong={playlist.songs?.[0]}
 									key={index}
 								/>
 							);
 						})
 					) : (
-						<div className="song-card empty">No playlists created yet.</div>
+						<div className="playlists-empty">No playlists yet. Create one to get started.</div>
 					)
 				}
 			</div>

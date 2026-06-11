@@ -21,28 +21,28 @@ export default function Page() {
 	})
 
 	useEffect(() => {
-		if (isAuthenticated) 
+		if (isAuthenticated)
 			router.push("/dashboard/playlists")
 	}, [isAuthenticated])
 
 
 	const handleLogin = async () => {
-		try {
-			const response = await login(form.username, form.password);
+		// try {
+		// 	const response = await login(form.username, form.password);
 
-			if (response) {
-				saveToken(response.token)
-				localStorage.setItem("user", form.username)
-				showToast("Login successful! Redirecting...", "success", 2000)
-				setTimeout(() => {
-					router.push('/dashboard/playlists')
-				}, 1000)
-			} else {
-				showToast("User not found. Please check your credentials.", "error")
-			}
-		} catch (error) {
-			showToast("Connection error. Please check if the server is running.", "error")
-		}
+		// 	if (response) {
+		// 		saveToken(response.token)
+		// 		localStorage.setItem("user", form.username)
+		// 		showToast("Login successful! Redirecting...", "success", 2000)
+		// 		setTimeout(() => {
+		router.push('/dashboard/playlists')
+		// 		}, 1000)
+		// 	} else {
+		// 		showToast("User not found. Please check your credentials.", "error")
+		// 	}
+		// } catch (error) {
+		// 	showToast("Connection error. Please check if the server is running.", "error")
+		// }
 	}
 
 	return (
@@ -50,8 +50,8 @@ export default function Page() {
 			<ToastContainer />
 			<div className="login-container">
 				<form className="login-form">
-					<i className="bi bi-person-fill"></i>
-					<h2>Log In</h2>
+					<h1 className="login-brand">dash<em>cord</em></h1>
+					<p className="login-tagline">Sign in to your library.</p>
 					<div className="input-group">
 						<label htmlFor="username">Username</label>
 						<input type="text" id="username" name="username" required
@@ -67,7 +67,7 @@ export default function Page() {
 								setForm({ ...form, password: e.target.value })
 							}} />
 					</div>
-					<input type="button" value="Log In" id="loginBtn" onClick={handleLogin} />
+					<input type="button" value="Sign in" id="loginBtn" onClick={handleLogin} />
 				</form>
 			</div>
 		</>

@@ -11,8 +11,11 @@ import "./page.css";
 function Page() {
 	return (
 		<>
-			<header className="songs-dashboard-header"></header>
-			<Suspense fallback={<div>Loading songs...</div>}>
+			<header className="songs-page-header">
+				<h1 className="songs-page-title">Discover <em>music</em></h1>
+				<p className="songs-page-subtitle">Search any song or artist to add to your playlists.</p>
+			</header>
+			<Suspense fallback={<div className="songs-empty">Loading…</div>}>
 				<SongsClient />
 			</Suspense>
 		</>
@@ -46,7 +49,7 @@ function SongsClient() {
 					const data = await searchSong(query);
 					setSongs(data);
 				} catch (err) {
-					console.error("Error al buscar canciones", err);
+					console.error("Error searching songs", err);
 				}
 			};
 			fetchSongs();
@@ -70,20 +73,23 @@ function SongsClient() {
 	};
 
 	return (
-		<section className="songs-list-section">
+		<section>
 			<form className="songs-search-form" onSubmit={handleSearch}>
-				<input
-					id="search"
-					type="text"
-					name="q"
-					className="songs-search-bar"
-					placeholder="Search song or artist..."
-					required
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
-				<button type="submit" className="songs-search-btn">
+				<div className="songs-search-wrap">
 					<i className="bi bi-search"></i>
+					<input
+						id="search"
+						type="text"
+						name="q"
+						className="songs-search-bar"
+						placeholder="Search song or artist…"
+						required
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+					/>
+				</div>
+				<button type="submit" className="songs-search-btn">
+					Search
 				</button>
 			</form>
 			<div className="songs-music-grid" id="grid">

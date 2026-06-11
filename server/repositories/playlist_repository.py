@@ -33,7 +33,7 @@ async def create_new_playlist(playlist: PlaylistDTO):
 
 
 async def add_song_to_playlist(song: Song, playlist_id: str):
-    update = await db.playlist_collection.update_one(
+    await db.playlist_collection.update_one(
         {"_id": ObjectId(playlist_id)},
         {"$addToSet": {"songs": song}}
     )

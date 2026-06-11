@@ -1,105 +1,124 @@
-.songs-dashboard-header {
-	font-size: 1.1rem;
-	color: #b9bbbe;
+.songs-page-header {
 	margin-bottom: 2rem;
-	text-align: right;
+}
+
+.songs-page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	line-height: 1;
+	letter-spacing: -0.03em;
+	margin: 0;
+	color: var(--text);
+}
+
+.songs-page-title em {
+	color: var(--accent);
+	font-style: normal;
+}
+
+.songs-page-subtitle {
+	color: var(--text-muted);
+	font-size: 0.92rem;
+	margin: 0.6rem 0 0 0;
 }
 
 .songs-search-form {
 	display: flex;
-	justify-content: center;
+	gap: 0.75rem;
 	align-items: center;
-	gap: 1rem;
 	margin-bottom: 2.5rem;
-	flex-wrap: wrap;
+	max-width: 640px;
+}
+
+.songs-search-wrap {
+	position: relative;
+	flex: 1;
+}
+
+.songs-search-wrap i {
+	position: absolute;
+	left: 1rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--text-faint);
+	font-size: 0.95rem;
+	pointer-events: none;
 }
 
 .songs-search-bar {
 	width: 100%;
-	max-width: 400px;
-	padding: 0.7rem 1.1rem;
-	border-radius: 8px;
-	border: 1.5px solid #23272a;
-	background: #23272a;
-	color: #fff;
-	font-size: 1.05rem;
-	font-family: inherit;
-	transition:
-		border 0.2s,
-		box-shadow 0.2s;
-	box-shadow: 0 2px 8px rgba(88, 101, 242, 0.05);
-	text-align: center;
+	padding: 0.85rem 1rem 0.85rem 2.6rem;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	background: var(--bg-elev);
+	color: var(--text);
+	font-size: 0.95rem;
+	transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .songs-search-bar:focus {
-	border-color: #5865f2;
+	border-color: var(--accent);
 	outline: none;
-	box-shadow: 0 0 0 2px #5865f2aa;
+	box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
 .songs-search-btn {
-	background: linear-gradient(90deg, #5865f2 0%, #4752c4 100%);
-	color: #fff;
+	background: var(--accent);
+	color: var(--accent-ink);
 	border: none;
-	border-radius: 8px;
-	font-size: 1.1rem;
+	border-radius: var(--radius);
+	font-size: 0.88rem;
 	font-weight: 600;
-	padding: 0.7rem 1.5rem;
+	padding: 0 1.4rem;
+	height: 46px;
 	cursor: pointer;
-	transition: background 0.2s;
-	display: flex;
+	transition: background 0.15s var(--ease);
+	display: inline-flex;
 	align-items: center;
 	gap: 0.5rem;
-	box-shadow: 0 2px 8px rgba(88, 101, 242, 0.1);
+	box-shadow: 0 6px 18px var(--accent-glow);
 }
 
 .songs-search-btn:hover {
-	background: linear-gradient(90deg, #4752c4 0%, #5865f2 100%);
+	background: var(--accent-hover);
 }
 
 .songs-music-grid {
 	display: grid;
-	grid-template-columns: repeat(5, minmax(220px, 1fr));
-	column-gap: 0.05rem;
-	row-gap: 0.7rem;
-	padding: 0;
-	margin: 0 auto;
-	max-width: 95vw;
-	margin: 0 100px;
-	justify-items: center;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 2rem 1.5rem;
 }
 
-@media (min-width:1200px) {
-	.songs-music-grid {
-		grid-template-columns: repeat(4, minmax(200px, 1fr));
-	}
+.songs-music-grid > *:nth-child(1)  { animation-delay: 20ms; }
+.songs-music-grid > *:nth-child(2)  { animation-delay: 60ms; }
+.songs-music-grid > *:nth-child(3)  { animation-delay: 100ms; }
+.songs-music-grid > *:nth-child(4)  { animation-delay: 140ms; }
+.songs-music-grid > *:nth-child(5)  { animation-delay: 180ms; }
+.songs-music-grid > *:nth-child(6)  { animation-delay: 220ms; }
+.songs-music-grid > *:nth-child(7)  { animation-delay: 260ms; }
+.songs-music-grid > *:nth-child(8)  { animation-delay: 300ms; }
+
+.songs-page-header,
+.songs-search-form {
+	animation: fadeInUp 0.5s var(--ease) both;
 }
 
-@media (max-width: 1200px) {
-	.songs-music-grid {
-		grid-template-columns: repeat(3, minmax(200px, 1fr));
-		column-gap: 0.03rem;
-		row-gap: 0.6rem;
-	}
-}
+.songs-search-form { animation-delay: 60ms; }
 
-@media (max-width: 900px) {
-	.songs-dashboard-header {
-		padding: 0 0.5rem;
-	}
-
-	.songs-music-grid {
-		grid-template-columns: repeat(2, minmax(180px, 1fr));
-		column-gap: 0.01rem;
-		row-gap: 0.5rem;
-	}
+.songs-empty {
+	padding: 5rem 0;
+	text-align: center;
+	color: var(--text-muted);
+	font-size: 0.95rem;
 }
 
 @media (max-width: 600px) {
+	.songs-page-title {
+		font-size: 2rem;
+	}
+
 	.songs-music-grid {
-		grid-template-columns: 1fr;
-		column-gap: 0;
-		row-gap: 0.4rem;
-		margin-left: 100px;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.5rem 1rem;
 	}
 }

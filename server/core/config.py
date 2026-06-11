@@ -23,3 +23,9 @@ def get_jwt_secret() -> str:
     if not jwt_secret:
         raise ValueError("No JWT Secret set")
     return jwt_secret
+
+def get_server_config() -> dict:
+    return {
+        "PORT": int(os.getenv("PORT",8000)),
+        "HOST": str(os.getenv("HOST") or "localhost"),
+    }
