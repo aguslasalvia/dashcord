@@ -1,0 +1,67 @@
+import axios from "axios";
+import { getToken } from "./token";
+import { IPlaylist, ISong } from "@/types";
+
+
+export const getAllPlaylist = async () => {
+	const response = await axios.get(import.meta.env.VITE_API_URL + "/playlists/all", {
+		headers: {
+			Authorization: "Bearer " + getToken()
+		}
+	})
+	const data = response.data;
+	if (data)
+		return data;
+	return [];
+};
+
+
+export const getPlaylistByID = async (id: string) => {
+	const response = await axios.get(import.meta.env.VITE_API_URL + "/playlists/playlist", {
+		headers: {
+			Authorization: "Bearer " + getToken()
+		},
+		params: { "id": id }
+	})
+	return response.data;
+};
+
+
+export const createPlaylist = async (playlist: IPlaylist) => {
+	const response = await axios.post(import.meta.env.VITE_API_URL + "/playlists/create", playlist, {
+		headers: {
+			Authorization: "Bearer " + getToken()
+		}
+	})
+	if (response.status == 201)
+		return response.data
+	return false
+};
+
+export const addSongToPlaylist = (song: ISong, playlistID: string) => {
+	return axios.patch(import.meta.env.VITE_API_URL + "/playlists/add", {
+		id: playlistID,
+		song: song
+	}, {
+		headers: {
+			Authorization: "Bearer " + getToken()
+		}
+	})
+}
+
+
+export const deleteSongsFromPlaylistByID = async (playlist_id: string, song_id: string) => {
+	const response = await axios.delete(import.meta.env.VITE_API_URL + "/playlists/song", {
+		headers: {
+			Authorization: "Bearer " + getToken()
+		},
+		data: {
+			playlist_id: playlist_id,
+			song_id: song_id
+		}
+	});
+	if (response.status === 204) {
+		return true;
+	}
+	return false;
+};
