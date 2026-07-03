@@ -1,5 +1,5 @@
 .sidebar {
-	width: 220px;
+	width: 72px;
 	flex-shrink: 0;
 	border-right: 1px solid var(--border);
 	background: var(--bg);
@@ -9,19 +9,21 @@
 }
 
 .sidebar-inner {
-	padding: 2rem 1rem 1.5rem 1.5rem;
+	padding: 1.5rem 0.75rem;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	height: 100%;
-	gap: 2rem;
+	gap: 1.5rem;
 }
 
 .sidebar-brand {
 	font-family: var(--font-serif);
-	font-size: 1.7rem;
+	font-size: 1.5rem;
 	line-height: 1;
 	letter-spacing: -0.02em;
 	color: var(--text);
+	animation: fadeIn 0.5s var(--ease);
 }
 
 .sidebar-brand em {
@@ -32,27 +34,55 @@
 .sidebar-nav {
 	display: flex;
 	flex-direction: column;
-	gap: 0.15rem;
+	align-items: center;
+	gap: 0.35rem;
 	flex: 1;
 }
 
 .sidebar-link {
 	display: flex;
 	align-items: center;
-	gap: 0.85rem;
+	justify-content: center;
 	color: var(--text-muted);
-	font-size: 0.92rem;
-	font-weight: 500;
-	padding: 0.6rem 0.85rem;
+	padding: 0.65rem;
 	border-radius: var(--radius);
 	transition: background 0.15s var(--ease), color 0.15s var(--ease);
 	position: relative;
+	animation: fadeInUp 0.4s var(--ease) both;
 }
 
 .sidebar-link i {
-	font-size: 1.05rem;
-	width: 20px;
+	font-size: 1.2rem;
+	width: 22px;
 	text-align: center;
+}
+
+/* Label becomes a hover tooltip floating to the right of the icon */
+.sidebar-link span,
+.sidebar-logout span {
+	position: absolute;
+	left: calc(100% + 0.6rem);
+	top: 50%;
+	transform: translateY(-50%) translateX(-4px);
+	background: var(--bg-elev);
+	color: var(--text);
+	font-size: 0.8rem;
+	font-weight: 500;
+	white-space: nowrap;
+	padding: 0.3rem 0.6rem;
+	border-radius: var(--radius);
+	border: 1px solid var(--border);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s var(--ease), transform 0.15s var(--ease);
+	z-index: 20;
+}
+
+.sidebar-link:hover span,
+.sidebar-logout:hover span {
+	opacity: 1;
+	transform: translateY(-50%) translateX(0);
 }
 
 .sidebar-link:hover {
@@ -68,7 +98,7 @@
 .sidebar-link.active::before {
 	content: "";
 	position: absolute;
-	left: -1.5rem;
+	left: -0.75rem;
 	top: 50%;
 	transform: translateY(-50%);
 	width: 3px;
@@ -78,14 +108,6 @@
 	animation: fadeIn 0.25s var(--ease);
 }
 
-.sidebar-brand {
-	animation: fadeIn 0.5s var(--ease);
-}
-
-.sidebar-link {
-	animation: fadeInUp 0.4s var(--ease) both;
-}
-
 .sidebar-link:nth-child(1) { animation-delay: 80ms; }
 .sidebar-link:nth-child(2) { animation-delay: 140ms; }
 .sidebar-link:nth-child(3) { animation-delay: 200ms; }
@@ -93,60 +115,23 @@
 .sidebar-logout {
 	display: flex;
 	align-items: center;
-	gap: 0.85rem;
+	justify-content: center;
 	color: var(--text-muted);
-	font-size: 0.92rem;
-	font-weight: 500;
-	padding: 0.6rem 0.85rem;
+	padding: 0.65rem;
 	border-radius: var(--radius);
 	transition: color 0.15s var(--ease), background 0.15s var(--ease);
 	background: none;
 	border: none;
-	text-align: left;
-	width: 100%;
+	position: relative;
 }
 
 .sidebar-logout i {
-	font-size: 1.05rem;
-	width: 20px;
+	font-size: 1.2rem;
+	width: 22px;
 	text-align: center;
 }
 
 .sidebar-logout:hover {
 	color: var(--danger);
 	background: var(--bg-elev);
-}
-
-@media (max-width: 900px) {
-	.sidebar {
-		width: 64px;
-	}
-
-	.sidebar-inner {
-		padding: 1.25rem 0.5rem;
-		align-items: center;
-	}
-
-	.sidebar-brand {
-		font-size: 1.2rem;
-	}
-
-	.sidebar-brand em {
-		display: none;
-	}
-
-	.sidebar-link span,
-	.sidebar-logout span {
-		display: none;
-	}
-
-	.sidebar-link,
-	.sidebar-logout {
-		justify-content: center;
-		padding: 0.6rem;
-	}
-
-	.sidebar-link.active::before {
-		left: -0.5rem;
-	}
 }

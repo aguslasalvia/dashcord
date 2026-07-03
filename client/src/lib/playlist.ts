@@ -3,16 +3,18 @@ import { getToken } from "./token";
 import { IPlaylist, ISong } from "@/types";
 
 
-export const getAllPlaylist = async () => {
-	const response = await axios.get(import.meta.env.VITE_API_URL + "/playlists/all", {
-		headers: {
-			Authorization: "Bearer " + getToken()
-		}
-	})
-	const data = response.data;
-	if (data)
-		return data;
-	return [];
+export const getAllPlaylist = async (): Promise<IPlaylist[]> => {
+	try {
+		const response = await axios.get(import.meta.env.VITE_API_URL + "/playlists/all", {
+			headers: {
+				Authorization: "Bearer " + getToken()
+			}
+		})
+		const data = response.data;
+		return Array.isArray(data) ? data : [];
+	} catch {
+		return [];
+	}
 };
 
 

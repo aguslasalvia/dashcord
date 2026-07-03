@@ -1,7 +1,10 @@
 import "./Profile.css"
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { logout } from "@/lib/auth";
 
 export default function Profile() {
+	const navigate = useNavigate();
 	const [profile, setProfile] = useState({
 		username: "Agustin",
 		email: "agustin@email.com",
@@ -47,6 +50,19 @@ export default function Profile() {
 						<button className="profile-btn-secondary">Cancel</button>
 						<button className="profile-btn-primary">Save changes</button>
 					</div>
+				</div>
+			</div>
+
+			<div className="profile-section">
+				<div className="profile-section-head">
+					<h2>Session</h2>
+					<p>Sign out of your account on this device.</p>
+				</div>
+				<div className="profile-section-body">
+					<button className="profile-btn-secondary" onClick={() => logout(navigate)}>
+						<i className="bi bi-box-arrow-right"></i>
+						Sign out
+					</button>
 				</div>
 			</div>
 

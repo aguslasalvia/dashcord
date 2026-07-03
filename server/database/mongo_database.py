@@ -1,5 +1,5 @@
-from motor.motor_asyncio import AsyncIOMotorClient
 from core.config import get_mongo_url
+from motor.motor_asyncio import AsyncIOMotorClient
 
 
 class MongoDatabase:
@@ -12,7 +12,6 @@ class MongoDatabase:
 
     def test_connection(self):
         try:
-            
             print("Conection established successfuly with the database.")
             return True
         except Exception as e:

@@ -22,7 +22,8 @@ export default function Playlists() {
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);
-			setPlaylistList(await getAllPlaylist());
+			const data = await getAllPlaylist();
+			setPlaylistList(Array.isArray(data) ? data : []);
 			setLoading(false);
 		};
 

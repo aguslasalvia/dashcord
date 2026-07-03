@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client"
-import { HashRouter, Routes, Route } from "react-router-dom"
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom"
 import { Provider } from "react-redux"
 import { store } from "@/store/store"
 import "./globals.css"
@@ -17,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 			<Routes>
 				<Route path="/" element={<Login />} />
 				<Route path="/dashboard" element={<DashboardLayout />}>
+					<Route index element={<Navigate to="playlists" replace />} />
 					<Route path="playlists" element={<Playlists />} />
 					<Route path="playlists/playlist" element={<Playlist />} />
 					<Route path="songs" element={<Songs />} />

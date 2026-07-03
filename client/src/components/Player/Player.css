@@ -15,7 +15,7 @@
 	position: fixed;
 	left: 0;
 	right: 0;
-	bottom: 0;
+	bottom: calc(var(--bottom-nav-h) + var(--bottom-nav-gap) + 0.5rem);
 	background: rgba(16, 16, 22, 0.85);
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);

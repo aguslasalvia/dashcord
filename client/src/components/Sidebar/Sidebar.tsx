@@ -17,8 +17,8 @@ export default function Sidebar() {
 	return (
 		<aside className="sidebar">
 			<div className="sidebar-inner">
-				<div className="sidebar-brand">
-					dash<em>cord</em>
+				<div className="sidebar-brand" title="dashcord">
+					d<em>c</em>
 				</div>
 
 				<nav className="sidebar-nav">

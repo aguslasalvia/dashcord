@@ -1,13 +1,17 @@
+:root {
+	--bottom-nav-h: 58px;
+	--bottom-nav-gap: 18px;
+}
+
 .dashboard-layout {
-	display: flex;
 	min-height: 100vh;
 	background: var(--bg);
 }
 
 .dashboard-main {
-	flex: 1;
 	min-width: 0;
-	padding: 2.5rem 3rem 7rem 3rem;
+	/* clear the floating bottom nav (+ the player bar that floats above it) */
+	padding: 2.5rem 3rem calc(var(--bottom-nav-h) + var(--bottom-nav-gap) + 6rem) 3rem;
 	max-width: 1400px;
 	margin: 0 auto;
 	width: 100%;
@@ -15,6 +19,6 @@
 
 @media (max-width: 900px) {
 	.dashboard-main {
-		padding: 1.5rem 1.25rem 6rem 1.25rem;
+		padding: 1.5rem 1.25rem calc(var(--bottom-nav-h) + var(--bottom-nav-gap) + 5rem) 1.25rem;
 	}
 }
