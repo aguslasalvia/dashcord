@@ -15,3 +15,12 @@ async def login(login_req: LoginRequest, response_model=list[LoginReponse]):
 
     else:
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+
+@router.post('/register')
+async def register(register_req: RegisterRequest, response_model=RegisterResponse):
+    response = await service.register(register_req.username, register_req.password)
+    if response is not None:
+        return response
+    else:
+        raise HTTPException(status_code=409, detail="Username already taken")

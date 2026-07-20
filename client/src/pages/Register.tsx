@@ -5,9 +5,9 @@ import { useToast } from "@/hooks/useToast"
 import { useAuth } from "@/hooks/useAuth"
 
 import { saveToken } from "@/lib/token"
-import { login } from "@/lib/auth"
+import { register } from "@/lib/auth"
 
-export default function Login() {
+export default function Register() {
 
 	const { isAuthenticated } = useAuth()
 	const navigate = useNavigate()
@@ -15,7 +15,8 @@ export default function Login() {
 	const { showToast, ToastContainer } = useToast()
 	const [form, setForm] = useState({
 		username: "",
-		password: ""
+		password: "",
+		confirmPassword: ""
 	})
 
 	useEffect(() => {
@@ -23,20 +24,29 @@ export default function Login() {
 			navigate("/dashboard/playlists")
 	}, [isAuthenticated])
 
+	const handleRegister = async () => {
+		if (form.username === "" || form.password === "") {
+			showToast("Please fill in all fields.", "error")
+			return
+		}
 
-	const handleLogin = async () => {
+		if (form.password !== form.confirmPassword) {
+			showToast("Passwords do not match.", "error")
+			return
+		}
+
 		try {
-			const response = await login(form.username, form.password);
+			const response = await register(form.username, form.password)
 
 			if (response) {
 				saveToken(response.token)
 				localStorage.setItem("user", form.username)
-				showToast("Login successful! Redirecting...", "success", 2000)
+				showToast("Account created! Redirecting...", "success", 2000)
 				setTimeout(() => {
 					navigate('/dashboard/playlists')
 				}, 1000)
 			} else {
-				showToast("User not found. Please check your credentials.", "error")
+				showToast("That username is already taken.", "error")
 			}
 		} catch (error) {
 			showToast("Connection error. Please check if the server is running.", "error")
@@ -49,7 +59,7 @@ export default function Login() {
 			<div className="login-container">
 				<form className="login-form">
 					<h1 className="login-brand">dash<em>cord</em></h1>
-					<p className="login-tagline">Sign in to your library.</p>
+					<p className="login-tagline">Create your library.</p>
 					<div className="input-group">
 						<label htmlFor="username">Username</label>
 						<input type="text" id="username" name="username" required
@@ -65,9 +75,16 @@ export default function Login() {
 								setForm({ ...form, password: e.target.value })
 							}} />
 					</div>
-					<input type="button" value="Sign in" id="loginBtn" onClick={handleLogin} />
+					<div className="input-group">
+						<label htmlFor="confirmPassword">Confirm password</label>
+						<input type="password" id="confirmPassword" name="confirmPassword" required
+							onChange={(e) => {
+								setForm({ ...form, confirmPassword: e.target.value })
+							}} />
+					</div>
+					<input type="button" value="Create account" id="loginBtn" onClick={handleRegister} />
 					<p className="login-switch">
-						Don't have an account? <Link to="/register">Sign up</Link>
+						Already have an account? <Link to="/">Sign in</Link>
 					</p>
 				</form>
 			</div>

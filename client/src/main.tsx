@@ -5,6 +5,7 @@ import { store } from "@/store/store"
 import "./globals.css"
 
 import Login from "@/pages/Login"
+import Register from "@/pages/Register"
 import DashboardLayout from "@/pages/DashboardLayout"
 import Playlists from "@/pages/Playlists"
 import Playlist from "@/pages/Playlist"
@@ -16,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 		<HashRouter>
 			<Routes>
 				<Route path="/" element={<Login />} />
+				<Route path="/register" element={<Register />} />
 				<Route path="/dashboard" element={<DashboardLayout />}>
 					<Route index element={<Navigate to="playlists" replace />} />
 					<Route path="playlists" element={<Playlists />} />
