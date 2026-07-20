@@ -1,11 +1,12 @@
 import axios from "axios";
 import { getToken } from "./token";
+import { API_URL } from "./config";
 
 export const searchSong = async (query: string) => {
   let token = getToken();
   console.log(getToken());
   const response = await axios.get(
-    import.meta.env.VITE_API_URL + "/songs/search",
+    API_URL + "/songs/search",
     {
       headers: {
         Authorization: "Bearer " + token,

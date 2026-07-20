@@ -42,11 +42,7 @@ Requires [Bun](https://bun.sh) and, for native builds, the [Rust toolchain](http
 bun install
 ```
 
-Create a `.env` file in `client/` pointing at your running backend:
-
-```bash
-VITE_API_URL=http://localhost:8000/api
-```
+The API base URL is hardcoded in [`src/lib/config.ts`](./src/lib/config.ts) (`API_URL`), currently `https://api.aguslasalvia.online/dashcord`. There's no `.env`/`VITE_API_URL` step needed — change that constant (and rebuild) if the backend moves.
 
 ## Scripts
 

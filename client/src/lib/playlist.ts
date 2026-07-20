@@ -1,11 +1,12 @@
 import axios from "axios";
 import { getToken } from "./token";
 import { IPlaylist, ISong } from "@/types";
+import { API_URL } from "./config";
 
 export const getAllPlaylist = async (): Promise<IPlaylist[]> => {
   try {
     const response = await axios.get(
-      import.meta.env.VITE_API_URL + "/playlists/all",
+      API_URL + "/playlists/all",
       {
         headers: {
           Authorization: "Bearer " + getToken(),
@@ -21,7 +22,7 @@ export const getAllPlaylist = async (): Promise<IPlaylist[]> => {
 
 export const getPlaylistByID = async (id: string) => {
   const response = await axios.get(
-    import.meta.env.VITE_API_URL + "/playlists/playlist",
+    API_URL + "/playlists/playlist",
     {
       headers: {
         Authorization: "Bearer " + getToken(),
@@ -34,7 +35,7 @@ export const getPlaylistByID = async (id: string) => {
 
 export const createPlaylist = async (playlist: IPlaylist) => {
   const response = await axios.post(
-    import.meta.env.VITE_API_URL + "/playlists/create",
+    API_URL + "/playlists/create",
     playlist,
     {
       headers: {
@@ -48,7 +49,7 @@ export const createPlaylist = async (playlist: IPlaylist) => {
 
 export const addSongToPlaylist = (song: ISong, playlistID: string) => {
   return axios.patch(
-    import.meta.env.VITE_API_URL + "/playlists/add",
+    API_URL + "/playlists/add",
     {
       id: playlistID,
       song: song,
@@ -66,7 +67,7 @@ export const deleteSongsFromPlaylistByID = async (
   song_id: string,
 ) => {
   const response = await axios.delete(
-    import.meta.env.VITE_API_URL + "/playlists/song",
+    API_URL + "/playlists/song",
     {
       headers: {
         Authorization: "Bearer " + getToken(),
