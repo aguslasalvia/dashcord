@@ -2,8 +2,8 @@ from repositories import playlist_repository as pr
 from models import Song
 
 
-async def get_all_playlists():
-    playlists = await pr.get_all_playlists()
+async def get_all_user_playlists(user: str):
+    playlists = await pr.get_all_user_playlists(user)
     if playlists is None:
         return []
     return playlists

@@ -8,8 +8,8 @@ router = APIRouter()
 
 
 @router.get("/all")
-async def get_all_playlists(current_user: dict = Depends(get_current_user)):
-    playlists = await service.get_all_playlists()
+async def get_all_user_playlists(current_user: dict = Depends(get_current_user)):
+    playlists = await service.get_all_user_playlists(current_user)
     return playlists
 
 

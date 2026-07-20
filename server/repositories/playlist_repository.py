@@ -5,8 +5,8 @@ from models import Song
 from typing import Optional
 
 
-async def get_all_playlists():
-    playlists = await db.playlist_collection.find({}).to_list()
+async def get_all_user_playlists(user: str):
+    playlists = await db.playlist_collection.find({"created_by": user}).to_list()
     return [await fix_mongo_id(p) for p in playlists]
 
 
