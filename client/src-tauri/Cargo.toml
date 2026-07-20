@@ -1,10 +1,10 @@
 [package]
 name = "app"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+description = "DashCord desktop client — listen to and manage your playlists"
+authors = ["aguslasalvia"]
 license = ""
-repository = ""
+repository = "https://github.com/aguslasalvia/dashcord"
 edition = "2021"
 rust-version = "1.77.2"
 
