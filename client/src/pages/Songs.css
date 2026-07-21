@@ -106,10 +106,25 @@
 .songs-search-form { animation-delay: 60ms; }
 
 .songs-empty {
+	grid-column: 1 / -1;
 	padding: 5rem 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
 	text-align: center;
 	color: var(--text-muted);
 	font-size: 0.95rem;
+}
+
+.songs-empty i {
+	font-size: 2rem;
+	color: var(--text-faint);
+}
+
+.songs-empty p {
+	margin: 0;
 }
 
 @media (max-width: 600px) {

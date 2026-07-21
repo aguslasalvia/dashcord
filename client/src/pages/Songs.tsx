@@ -9,6 +9,7 @@ import "./Songs.css";
 export default function Songs() {
 	const [search, setSearch] = useState("");
 	const [songs, setSongs] = useState<any[]>([]);
+	const [hasSearched, setHasSearched] = useState(false);
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [showModal, setShowModal] = useState(false);
 	const [selectedSong, setSelectedSong] = useState<any | null>(null);
@@ -30,11 +31,20 @@ export default function Songs() {
 					setSongs(data);
 				} catch (err) {
 					console.error("Error searching songs", err);
+				} finally {
+					setHasSearched(true);
 				}
 			};
 			fetchSongs();
 		}
 	}, [searchParams]);
+
+	const queue = songs.map((song) => ({
+		youtube_id: song.id,
+		title: song.title,
+		artist: song.channel?.name,
+		cover: `https://img.youtube.com/vi/${song.id}/mqdefault.jpg`,
+	}));
 
 	const handleOpenModal = (song: any) => {
 		setSelectedSong(song);
@@ -78,15 +88,24 @@ export default function Songs() {
 					</button>
 				</form>
 				<div className="songs-music-grid" id="grid">
-					{songs.map((song, index) => (
-						<SongCard
-							key={index}
-							title={song.title}
-							youtube_id={song.id}
-							artist={song["cannel"]}
-							onAddToPlaylist={handleOpenModal}
-						/>
-					))}
+					{songs.length > 0 ? (
+						songs.map((song, index) => (
+							<SongCard
+								key={index}
+								title={song.title}
+								youtube_id={song.id}
+								artist={song.channel?.name}
+								queue={queue}
+								index={index}
+								onAddToPlaylist={handleOpenModal}
+							/>
+						))
+					) : hasSearched ? (
+						<div className="songs-empty">
+							<i className="bi bi-search"></i>
+							<p>No results for "{searchParams.get("q")}". Try a different search.</p>
+						</div>
+					) : null}
 				</div>
 				{showModal && selectedSong && (
 					<div className="playlists-modal-overlay" onClick={handleCloseModal}>

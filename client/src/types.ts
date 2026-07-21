@@ -10,6 +10,7 @@ export interface IPlaylist {
 	name: string,
 	created_by: string
 	songs: Array<ISong>
+	cover?: string
 }
 
 export const Playlist: IPlaylist = {

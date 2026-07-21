@@ -2,8 +2,10 @@ import { getPlaylistByID, deleteSongsFromPlaylistByID } from "@/lib/playlist";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
-import { IPlaylist, ISong } from "@/types";
+import { IPlaylist } from "@/types";
 import { usePlayer } from "@/components/Player/Player";
+import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
+import { openExternal } from "@/lib/shell";
 import "./Playlist.css";
 
 export default function Playlist() {
@@ -12,15 +14,19 @@ export default function Playlist() {
   const id = params.get("id");
   const [playlist, setPlaylist] = useState<IPlaylist>();
   const { showToast, ToastContainer } = useToast();
-  const { play, current, isPlaying } = usePlayer();
+  const { playQueue, current, isPlaying } = usePlayer();
+  const [songToDelete, setSongToDelete] = useState<string | null>(null);
+  const [confirmDeletePlaylist, setConfirmDeletePlaylist] = useState(false);
 
-  const playSong = (song: ISong) => {
-    play({
+  const playSong = (index: number) => {
+    if (!playlist) return;
+    const queue = playlist.songs.map((song) => ({
       youtube_id: song.youtube_id,
       title: song.title,
       artist: song.artist,
       cover: `https://img.youtube.com/vi/${song.youtube_id}/mqdefault.jpg`,
-    });
+    }));
+    playQueue(queue, index);
   };
 
   const fetchPlaylist = async () => {
@@ -33,15 +39,16 @@ export default function Playlist() {
     fetchPlaylist();
   }, [id]);
 
-  const handleDeleteSong = async (song_id: string) => {
-    if (!id) return;
-    const ok = await deleteSongsFromPlaylistByID(id, song_id);
+  const handleDeleteSong = async () => {
+    if (!id || !songToDelete) return;
+    const ok = await deleteSongsFromPlaylistByID(id, songToDelete);
     if (ok) {
       showToast("Song removed from playlist", "success");
       fetchPlaylist();
     } else {
       showToast("Error removing song", "error");
     }
+    setSongToDelete(null);
   };
 
   const handleDeletePlaylist = async () => {
@@ -53,6 +60,7 @@ export default function Playlist() {
     } else {
       showToast("Error deleting playlist", "error");
     }
+    setConfirmDeletePlaylist(false);
   };
 
   const cover = playlist?.songs[0]?.youtube_id
@@ -86,7 +94,7 @@ export default function Playlist() {
               <button
                 className="playlist-visor-play-btn"
                 title="Play"
-                onClick={() => playlist.songs[0] && playSong(playlist.songs[0])}
+                onClick={() => playSong(0)}
                 disabled={playlist.songs.length === 0}
               >
                 <i className="bi bi-play-fill"></i>
@@ -94,7 +102,7 @@ export default function Playlist() {
               <button
                 className="playlist-visor-delete-btn"
                 title="Delete playlist"
-                onClick={handleDeletePlaylist}
+                onClick={() => setConfirmDeletePlaylist(true)}
               >
                 <i className="bi bi-trash"></i>
               </button>
@@ -122,7 +130,7 @@ export default function Playlist() {
                       <tr
                         key={idx}
                         className={`playlist-visor-song-row${isCurrent ? " playing" : ""}`}
-                        onDoubleClick={() => playSong(song)}
+                        onDoubleClick={() => playSong(idx)}
                         style={{ animationDelay: `${idx * 40}ms` }}
                       >
                         <td className="playlist-visor-song-index">
@@ -142,7 +150,7 @@ export default function Playlist() {
                                 className="row-play-overlay"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  playSong(song);
+                                  playSong(idx);
                                 }}
                                 aria-label="Play"
                               >
@@ -163,9 +171,8 @@ export default function Playlist() {
                               className="playlist-visor-song-btn youtube"
                               title="View on YouTube"
                               onClick={() =>
-                                window.open(
+                                openExternal(
                                   `https://www.youtube.com/watch?v=${song.youtube_id}`,
-                                  "_blank",
                                 )
                               }
                             >
@@ -186,7 +193,7 @@ export default function Playlist() {
                             <button
                               className="playlist-visor-song-btn delete"
                               title="Remove song"
-                              onClick={() => handleDeleteSong(song.youtube_id)}
+                              onClick={() => setSongToDelete(song.youtube_id)}
                             >
                               <i className="bi bi-trash"></i>
                             </button>
@@ -203,6 +210,23 @@ export default function Playlist() {
       ) : (
         <div className="playlist-visor-loading">Loading playlist…</div>
       )}
+
+      <ConfirmDialog
+        open={songToDelete !== null}
+        title="Remove song"
+        message="Remove this song from the playlist? This can't be undone."
+        confirmLabel="Remove"
+        onConfirm={handleDeleteSong}
+        onCancel={() => setSongToDelete(null)}
+      />
+      <ConfirmDialog
+        open={confirmDeletePlaylist}
+        title="Delete playlist"
+        message={`Delete "${playlist?.name}" permanently? This can't be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleDeletePlaylist}
+        onCancel={() => setConfirmDeletePlaylist(false)}
+      />
     </div>
   );
 }

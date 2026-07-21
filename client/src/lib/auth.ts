@@ -1,6 +1,7 @@
 
 import axios from "axios"
 import { API_URL } from "./config"
+import { stop } from "@/components/Player/Player"
 
 export const login = async (username: string, password: string) => {
 	try {
@@ -31,6 +32,7 @@ export const register = async (username: string, password: string) => {
 
 
 export const logout = async (navigate: (path: string) => void) => {
+	stop()
 	localStorage.clear()
 	navigate("/")
 }

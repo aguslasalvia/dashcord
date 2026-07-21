@@ -4,7 +4,6 @@ import { API_URL } from "./config";
 
 export const searchSong = async (query: string) => {
   let token = getToken();
-  console.log(getToken());
   const response = await axios.get(
     API_URL + "/songs/search",
     {

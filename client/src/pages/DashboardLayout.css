@@ -1,17 +1,18 @@
 :root {
-	--bottom-nav-h: 58px;
-	--bottom-nav-gap: 18px;
+	--player-bar-h: 76px;
 }
 
 .dashboard-layout {
 	min-height: 100vh;
 	background: var(--bg);
+	display: flex;
 }
 
 .dashboard-main {
+	flex: 1;
 	min-width: 0;
-	/* clear the floating bottom nav (+ the player bar that floats above it) */
-	padding: 2.5rem 3rem calc(var(--bottom-nav-h) + var(--bottom-nav-gap) + 6rem) 3rem;
+	/* clear the docked player bar at the bottom of the viewport */
+	padding: 2.5rem 3rem calc(var(--player-bar-h) + 2rem) 3rem;
 	max-width: 1400px;
 	margin: 0 auto;
 	width: 100%;
@@ -19,6 +20,6 @@
 
 @media (max-width: 900px) {
 	.dashboard-main {
-		padding: 1.5rem 1.25rem calc(var(--bottom-nav-h) + var(--bottom-nav-gap) + 5rem) 1.25rem;
+		padding: 1.5rem 1.25rem calc(var(--player-bar-h) + 1.5rem) 1.25rem;
 	}
 }

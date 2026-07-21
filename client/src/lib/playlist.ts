@@ -43,8 +43,8 @@ export const createPlaylist = async (playlist: IPlaylist) => {
       },
     },
   );
-  if (response.status == 201) return response.data;
-  return false;
+  // The server responds 201 with an empty body, so there's no payload to return.
+  return response.status === 201;
 };
 
 export const addSongToPlaylist = (song: ISong, playlistID: string) => {

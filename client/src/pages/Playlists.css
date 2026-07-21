@@ -121,9 +121,23 @@
 .playlists-empty {
 	grid-column: 1 / -1;
 	padding: 5rem 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
 	text-align: center;
 	color: var(--text-muted);
 	font-size: 0.95rem;
+}
+
+.playlists-empty i {
+	font-size: 2rem;
+	color: var(--text-faint);
+}
+
+.playlists-empty p {
+	margin: 0;
 }
 
 /* Modal */

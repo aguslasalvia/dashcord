@@ -11,6 +11,7 @@ export default function Playlists() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [playlistList, setPlaylistList] = useState<IPlaylist[]>([])
 	const [modalMessage, setModalMessage] = useState<string | null>(null);
+	const [search, setSearch] = useState('');
 
 	const [formData, setFormData] = useState({
 		name: '',
@@ -19,14 +20,14 @@ export default function Playlists() {
 		songs: []
 	});
 
-	useEffect(() => {
-		const fetchData = async () => {
-			setLoading(true);
-			const data = await getAllPlaylist();
-			setPlaylistList(Array.isArray(data) ? data : []);
-			setLoading(false);
-		};
+	const fetchData = async () => {
+		setLoading(true);
+		const data = await getAllPlaylist();
+		setPlaylistList(Array.isArray(data) ? data : []);
+		setLoading(false);
+	};
 
+	useEffect(() => {
 		const getUsername = () => {
 			setFormData({ ...formData, created_by: getUserFromStorage() as string })
 		}
@@ -55,11 +56,16 @@ export default function Playlists() {
 		const response = await createPlaylist(formData);
 		if (response) {
 			setModalMessage('Playlist created successfully!');
-			// Opcional: recargar la lista de playlists aquí
+			await fetchData();
+			setTimeout(handleCloseModal, 900);
 		} else {
 			setModalMessage('An error occurred while creating the playlist.');
 		}
 	}
+
+	const filteredPlaylists = playlistList.filter(playlist =>
+		playlist.name.toLowerCase().includes(search.trim().toLowerCase())
+	);
 
 	const handleInputChange = (e: any) => {
 		const { name, value } = e.target;
@@ -88,7 +94,8 @@ export default function Playlists() {
 						id="search-bar"
 						className="playlists-search-bar"
 						placeholder="Search by name…"
-						list="playlist-names"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
 					/>
 				</div>
 				<button
@@ -99,16 +106,13 @@ export default function Playlists() {
 					<i className="bi bi-plus-lg"></i>
 					<span>New playlist</span>
 				</button>
-				<datalist id="playlist-names">
-					{playlistList.map((playlist, index) => <option key={index} value={playlist.name} />)}
-				</datalist>
 			</div>
 			<div className="playlists-music-grid" id="music-grid">
 				{
 					loading ? (
 						<div className="playlists-empty">Loading playlists…</div>
-					) : playlistList.length > 0 ? (
-						playlistList.map((playlist: any, index) => {
+					) : filteredPlaylists.length > 0 ? (
+						filteredPlaylists.map((playlist: any, index) => {
 							let cover = playlist.cover;
 							if ((!cover || cover === "") && playlist.songs && playlist.songs.length > 0) {
 								const youtube_id = playlist.songs[0].youtube_id;
@@ -125,13 +129,21 @@ export default function Playlists() {
 									title={playlist.name}
 									created={playlist.created_by}
 									cover={cover}
-									firstSong={playlist.songs?.[0]}
+									songs={playlist.songs}
 									key={index}
 								/>
 							);
 						})
+					) : playlistList.length > 0 ? (
+						<div className="playlists-empty">
+							<i className="bi bi-search"></i>
+							<p>No playlists match "{search}".</p>
+						</div>
 					) : (
-						<div className="playlists-empty">No playlists yet. Create one to get started.</div>
+						<div className="playlists-empty">
+							<i className="bi bi-collection"></i>
+							<p>No playlists yet. Create one to get started.</p>
+						</div>
 					)
 				}
 			</div>
