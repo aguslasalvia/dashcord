@@ -1,0 +1,558 @@
+---
+import "@/styles/global.css"
+
+const REPO_URL = "https://github.com/AgusLasalvia/DashCord"
+
+const features = [
+	{
+		icon: "bi-search",
+		title: "Search YouTube",
+		text: "Find any track straight from YouTube's catalog without leaving the app.",
+	},
+	{
+		icon: "bi-collection-play",
+		title: "Build playlists",
+		text: "Organize songs into playlists and get back to them in one click.",
+	},
+	{
+		icon: "bi-soundwave",
+		title: "In-app playback",
+		text: "Play tracks right inside DashCord — no browser tab, no ads.",
+	},
+	{
+		icon: "bi-discord",
+		title: "Discord bot ready",
+		text: "Pair it with the companion Discord bot to bring your library into voice channels.",
+	},
+	{
+		icon: "bi-window-stack",
+		title: "Cross-platform",
+		text: "One native desktop app for Windows, macOS, and Linux, powered by Tauri.",
+	},
+	{
+		icon: "bi-hdd-network",
+		title: "Self-hosted backend",
+		text: "Your own FastAPI + MongoDB server keeps your library and accounts under your control.",
+	},
+]
+
+const platforms = [
+	{ icon: "bi-windows", label: "Windows", note: ".msi / .exe" },
+	{ icon: "bi-apple", label: "macOS", note: ".dmg" },
+	{ icon: "bi-ubuntu", label: "Linux", note: ".deb" },
+]
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content="DashCord — a cross-platform desktop app for managing and playing YouTube playlists, with optional Discord bot integration." />
+		<link rel="icon" type="image/png" href="/assets/logo.png" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+		<title>DashCord — your YouTube library, off the browser</title>
+	</head>
+	<body>
+		<div class="glow glow-a"></div>
+		<div class="glow glow-b"></div>
+
+		<header class="nav">
+			<div class="nav-inner">
+				<a href="#top" class="brand">
+					<img src="/assets/logo.png" alt="" class="brand-mark" />
+					<span class="brand-name">dash<em>cord</em></span>
+				</a>
+				<nav class="nav-links">
+					<a href="#features">Features</a>
+					<a href="#download">Download</a>
+					<a href={REPO_URL} target="_blank" rel="noreferrer">GitHub</a>
+				</nav>
+			</div>
+		</header>
+
+		<main id="top">
+			<section class="hero">
+				<p class="eyebrow">Free &amp; open source</p>
+				<h1>Your YouTube playlists,<br /><em>off the browser.</em></h1>
+				<p class="hero-tagline">
+					DashCord is a native desktop app for searching, organizing, and playing YouTube
+					tracks — with an optional Discord bot to bring the same library into your server.
+				</p>
+				<div class="hero-actions">
+					<a href="#download" class="btn btn-primary">
+						<i class="bi bi-download"></i> Download for free
+					</a>
+					<a href={REPO_URL} target="_blank" rel="noreferrer" class="btn btn-ghost">
+						<i class="bi bi-github"></i> View source
+					</a>
+				</div>
+
+				<div class="hero-art" aria-hidden="true">
+					<div class="mock-window">
+						<div class="mock-titlebar">
+							<span></span><span></span><span></span>
+						</div>
+						<div class="mock-body">
+							<div class="mock-sidebar">
+								<div class="mock-dot mock-dot-active"></div>
+								<div class="mock-dot"></div>
+								<div class="mock-dot"></div>
+							</div>
+							<div class="mock-grid">
+								{Array.from({ length: 6 }).map(() => (
+									<div class="mock-card">
+										<div class="mock-cover"></div>
+										<div class="mock-line mock-line-title"></div>
+										<div class="mock-line mock-line-sub"></div>
+									</div>
+								))}
+							</div>
+						</div>
+						<div class="mock-player">
+							<div class="mock-cover mock-cover-sm"></div>
+							<div class="mock-bars">
+								<span></span><span></span><span></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section id="features" class="features">
+				<h2>Everything you need, nothing you don't</h2>
+				<div class="features-grid">
+					{features.map((f) => (
+						<div class="feature-card">
+							<div class="feature-icon"><i class={`bi ${f.icon}`}></i></div>
+							<h3>{f.title}</h3>
+							<p>{f.text}</p>
+						</div>
+					))}
+				</div>
+			</section>
+
+			<section id="download" class="download">
+				<h2>Available on every desktop</h2>
+				<p class="download-sub">Grab the latest installer from the GitHub releases page.</p>
+				<div class="platforms">
+					{platforms.map((p) => (
+						<a href={`${REPO_URL}/releases/latest`} target="_blank" rel="noreferrer" class="platform-card">
+							<i class={`bi ${p.icon}`}></i>
+							<span class="platform-label">{p.label}</span>
+							<span class="platform-note">{p.note}</span>
+						</a>
+					))}
+				</div>
+				<a href={`${REPO_URL}/releases/latest`} target="_blank" rel="noreferrer" class="btn btn-primary btn-lg">
+					<i class="bi bi-download"></i> Get the latest release
+				</a>
+			</section>
+		</main>
+
+		<footer class="footer">
+			<div class="footer-inner">
+				<span>&copy; {new Date().getFullYear()} DashCord. Source available under its repository license.</span>
+				<a href={REPO_URL} target="_blank" rel="noreferrer"><i class="bi bi-github"></i> AgusLasalvia/DashCord</a>
+			</div>
+		</footer>
+
+		<style>
+			.glow {
+				position: fixed;
+				border-radius: 50%;
+				filter: blur(80px);
+				pointer-events: none;
+				z-index: 0;
+			}
+			.glow-a {
+				top: -10%;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 900px;
+				height: 900px;
+				background: radial-gradient(circle, rgba(244, 63, 94, 0.16) 0%, transparent 65%);
+			}
+			.glow-b {
+				top: 40%;
+				right: -10%;
+				width: 700px;
+				height: 700px;
+				background: radial-gradient(circle, rgba(124, 108, 240, 0.12) 0%, transparent 65%);
+			}
+
+			.nav {
+				position: sticky;
+				top: 0;
+				z-index: 10;
+				background: rgba(12, 12, 16, 0.7);
+				backdrop-filter: blur(14px);
+				-webkit-backdrop-filter: blur(14px);
+				border-bottom: 1px solid var(--border);
+			}
+			.nav-inner {
+				max-width: 1100px;
+				margin: 0 auto;
+				padding: 1rem 1.5rem;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			.brand {
+				display: flex;
+				align-items: center;
+				gap: 0.6rem;
+			}
+			.brand-mark {
+				width: 30px;
+				height: 30px;
+			}
+			.brand-name {
+				font-size: 1.15rem;
+				font-weight: 700;
+				letter-spacing: -0.02em;
+			}
+			.brand-name em {
+				color: var(--accent);
+				font-style: normal;
+			}
+			.nav-links {
+				display: flex;
+				gap: 1.75rem;
+				font-size: 0.9rem;
+				color: var(--text-muted);
+			}
+			.nav-links a {
+				transition: color 0.15s var(--ease);
+			}
+			.nav-links a:hover {
+				color: var(--text);
+			}
+
+			main {
+				position: relative;
+				z-index: 1;
+			}
+
+			.hero {
+				max-width: 780px;
+				margin: 0 auto;
+				padding: 5.5rem 1.5rem 2rem;
+				text-align: center;
+			}
+			.eyebrow {
+				display: inline-block;
+				margin: 0 0 1.25rem;
+				padding: 0.35rem 0.85rem;
+				border: 1px solid var(--border-strong);
+				border-radius: 999px;
+				font-size: 0.78rem;
+				font-weight: 600;
+				color: var(--text-muted);
+				background: var(--bg-elev);
+				animation: fadeInUp 0.5s var(--ease) both;
+			}
+			.hero h1 {
+				margin: 0 0 1.25rem;
+				font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+				font-weight: 800;
+				line-height: 1.1;
+				letter-spacing: -0.03em;
+				animation: fadeInUp 0.5s var(--ease) 60ms both;
+			}
+			.hero h1 em {
+				color: var(--accent);
+				font-style: normal;
+			}
+			.hero-tagline {
+				margin: 0 auto 2.25rem;
+				max-width: 560px;
+				color: var(--text-muted);
+				font-size: 1.05rem;
+				line-height: 1.6;
+				animation: fadeInUp 0.5s var(--ease) 120ms both;
+			}
+			.hero-actions {
+				display: flex;
+				gap: 0.85rem;
+				justify-content: center;
+				flex-wrap: wrap;
+				animation: fadeInUp 0.5s var(--ease) 180ms both;
+			}
+
+			.btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.8rem 1.4rem;
+				border-radius: var(--radius);
+				font-size: 0.92rem;
+				font-weight: 600;
+				border: 1px solid transparent;
+				transition: background 0.18s var(--ease), box-shadow 0.18s var(--ease), transform 0.1s var(--ease), border-color 0.18s var(--ease);
+			}
+			.btn:active {
+				transform: translateY(1px);
+			}
+			.btn-primary {
+				background: var(--accent);
+				color: var(--accent-ink);
+				box-shadow: 0 8px 24px var(--accent-glow);
+			}
+			.btn-primary:hover {
+				background: var(--accent-hover);
+				box-shadow: 0 10px 32px var(--accent-glow);
+			}
+			.btn-ghost {
+				background: var(--bg-elev);
+				border-color: var(--border-strong);
+				color: var(--text);
+			}
+			.btn-ghost:hover {
+				background: var(--bg-elev-2);
+			}
+			.btn-lg {
+				padding: 0.95rem 1.8rem;
+				font-size: 0.98rem;
+			}
+
+			.hero-art {
+				margin-top: 3.5rem;
+				animation: fadeInUp 0.7s var(--ease) 240ms both;
+			}
+			.mock-window {
+				max-width: 720px;
+				margin: 0 auto;
+				border-radius: var(--radius-xl);
+				border: 1px solid var(--border);
+				background: var(--bg-elev);
+				box-shadow: var(--shadow-lg);
+				overflow: hidden;
+				animation: float 6s var(--ease) infinite;
+			}
+			.mock-titlebar {
+				display: flex;
+				gap: 0.4rem;
+				padding: 0.7rem 0.9rem;
+				border-bottom: 1px solid var(--border);
+			}
+			.mock-titlebar span {
+				width: 9px;
+				height: 9px;
+				border-radius: 50%;
+				background: var(--border-strong);
+			}
+			.mock-body {
+				display: flex;
+				gap: 1rem;
+				padding: 1.25rem;
+			}
+			.mock-sidebar {
+				display: flex;
+				flex-direction: column;
+				gap: 0.6rem;
+				padding-right: 1rem;
+				border-right: 1px solid var(--border);
+			}
+			.mock-dot {
+				width: 26px;
+				height: 26px;
+				border-radius: 8px;
+				background: var(--bg-elev-2);
+			}
+			.mock-dot-active {
+				background: var(--accent-soft);
+				box-shadow: inset 0 0 0 1px var(--accent);
+			}
+			.mock-grid {
+				flex: 1;
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 0.8rem;
+			}
+			.mock-card {
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+			}
+			.mock-cover {
+				aspect-ratio: 1 / 1;
+				border-radius: var(--radius);
+				background: linear-gradient(135deg, var(--bg-elev-2), var(--border-strong));
+			}
+			.mock-line {
+				height: 6px;
+				border-radius: 3px;
+				background: var(--bg-elev-2);
+			}
+			.mock-line-title {
+				width: 70%;
+			}
+			.mock-line-sub {
+				width: 45%;
+				background: var(--border);
+			}
+			.mock-player {
+				display: flex;
+				align-items: center;
+				gap: 0.85rem;
+				padding: 0.85rem 1.25rem;
+				border-top: 1px solid var(--border);
+				background: rgba(16, 16, 22, 0.6);
+			}
+			.mock-cover-sm {
+				width: 34px;
+				height: 34px;
+				flex-shrink: 0;
+			}
+			.mock-bars {
+				display: flex;
+				align-items: flex-end;
+				gap: 3px;
+				height: 16px;
+			}
+			.mock-bars span {
+				width: 3px;
+				border-radius: 2px;
+				background: var(--accent);
+				animation: barPulse 1.1s ease-in-out infinite;
+			}
+			.mock-bars span:nth-child(1) { height: 40%; animation-delay: 0ms; }
+			.mock-bars span:nth-child(2) { height: 100%; animation-delay: 150ms; }
+			.mock-bars span:nth-child(3) { height: 65%; animation-delay: 300ms; }
+			@keyframes barPulse {
+				0%, 100% { transform: scaleY(0.4); }
+				50%      { transform: scaleY(1); }
+			}
+
+			.features {
+				max-width: 1100px;
+				margin: 0 auto;
+				padding: 6rem 1.5rem 2rem;
+			}
+			.features h2,
+			.download h2 {
+				text-align: center;
+				font-size: clamp(1.6rem, 3.5vw, 2.1rem);
+				font-weight: 700;
+				letter-spacing: -0.02em;
+				margin: 0 0 3rem;
+			}
+			.features-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 1.25rem;
+			}
+			.feature-card {
+				padding: 1.6rem;
+				border: 1px solid var(--border);
+				border-radius: var(--radius-lg);
+				background: var(--bg-elev);
+				transition: transform 0.2s var(--ease), border-color 0.2s var(--ease);
+			}
+			.feature-card:hover {
+				transform: translateY(-3px);
+				border-color: var(--border-strong);
+			}
+			.feature-icon {
+				width: 42px;
+				height: 42px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: var(--radius);
+				background: var(--accent-soft);
+				color: var(--accent);
+				font-size: 1.15rem;
+				margin-bottom: 1rem;
+			}
+			.feature-card h3 {
+				margin: 0 0 0.5rem;
+				font-size: 1.05rem;
+				font-weight: 600;
+			}
+			.feature-card p {
+				margin: 0;
+				color: var(--text-muted);
+				font-size: 0.9rem;
+				line-height: 1.55;
+			}
+
+			.download {
+				max-width: 780px;
+				margin: 0 auto;
+				padding: 5rem 1.5rem 7rem;
+				text-align: center;
+			}
+			.download-sub {
+				margin: -2rem 0 2.5rem;
+				color: var(--text-muted);
+			}
+			.platforms {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+				gap: 1rem;
+				margin-bottom: 2.5rem;
+			}
+			.platform-card {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 1.5rem 1rem;
+				border: 1px solid var(--border);
+				border-radius: var(--radius-lg);
+				background: var(--bg-elev);
+				transition: transform 0.2s var(--ease), border-color 0.2s var(--ease), background 0.2s var(--ease);
+			}
+			.platform-card:hover {
+				transform: translateY(-3px);
+				border-color: var(--accent);
+				background: var(--bg-elev-2);
+			}
+			.platform-card i {
+				font-size: 1.6rem;
+				color: var(--text);
+			}
+			.platform-label {
+				font-weight: 600;
+				font-size: 0.95rem;
+			}
+			.platform-note {
+				font-size: 0.78rem;
+				color: var(--text-muted);
+			}
+
+			.footer {
+				border-top: 1px solid var(--border);
+			}
+			.footer-inner {
+				max-width: 1100px;
+				margin: 0 auto;
+				padding: 1.75rem 1.5rem;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				justify-content: space-between;
+				align-items: center;
+				color: var(--text-muted);
+				font-size: 0.85rem;
+			}
+			.footer-inner a {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+				transition: color 0.15s var(--ease);
+			}
+			.footer-inner a:hover {
+				color: var(--text);
+			}
+
+			@media (max-width: 640px) {
+				.mock-body { flex-direction: column; }
+				.mock-sidebar { flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 0 0 0.75rem; }
+				.mock-grid { grid-template-columns: repeat(2, 1fr); }
+			}
+		</style>
+	</body>
+</html>
