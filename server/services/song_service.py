@@ -1,20 +1,10 @@
-from youtubesearchpython import VideosSearch
-from typing import Optional, Dict, Any, Union
+from youtube.search import search_video_urls
+from youtube.stream import get_audio_stream_url
 
 
-async def search_video_urls(filter_text: str, limit: int = 25) -> Optional[Union[Dict[str, Any], str]]:
+async def search_songs(query: str, limit: int = 25):
+    return await search_video_urls(query, limit=limit)
 
-    try:
-        search_result = VideosSearch(filter_text.strip(), limit=limit).result()
 
-        if isinstance(search_result, dict):
-            return search_result
-        elif isinstance(search_result, str):
-            return search_result
-        else:
-            return None
-
-    except ValueError as e:
-        return None
-    except Exception as e:
-        return None
+def get_stream_url(video_id: str):
+    return get_audio_stream_url(video_id)
