@@ -3,11 +3,14 @@ import { useSelector } from "react-redux";
 import { store, RootState } from "@/store/store";
 import {
   setCurrent,
+  setQueue,
   setIsPlaying,
   setProgress,
+  setError,
   reset,
   PlayerTrack,
 } from "@/store/playerSlice";
+import { useToast } from "@/hooks/useToast";
 import "./Player.css";
 
 export type { PlayerTrack };
@@ -20,16 +23,18 @@ declare global {
 }
 
 let ytPlayer: any = null;
+let apiLoaded = false;
 let ready = false;
 let intervalId: any = null;
 let pendingTrack: PlayerTrack | null = null;
 
-function initPlayer() {
+function initPlayer(initialTrack?: PlayerTrack) {
   if (ytPlayer) return;
   ytPlayer = new window.YT.Player("yt-iframe-target", {
     height: "1",
     width: "1",
-    playerVars: { playsinline: 1, controls: 0, autoplay: 0 },
+    videoId: initialTrack?.youtube_id,
+    playerVars: { playsinline: 1, controls: 0, autoplay: initialTrack ? 1 : 0 },
     events: {
       onReady: () => {
         ready = true;
@@ -49,7 +54,21 @@ function initPlayer() {
         } else if (e.data === YT.PlayerState.ENDED) {
           store.dispatch(setIsPlaying(false));
           stopProgressLoop();
+          next();
         }
+      },
+      onError: (e: any) => {
+        const reasons: Record<number, string> = {
+          2: "Invalid video.",
+          5: "This video can't be played here.",
+          100: "This video was not found, is private, or was removed.",
+          101: "This video can't be played outside YouTube.",
+          150: "This video can't be played outside YouTube.",
+        };
+        store.dispatch(setIsPlaying(false));
+        store.dispatch(setError(reasons[e.data] ?? "This video can't be played."));
+        stopProgressLoop();
+        next();
       },
     },
   });
@@ -73,27 +92,62 @@ function stopProgressLoop() {
   intervalId = null;
 }
 
-function play(track: PlayerTrack) {
+function loadTrack(track: PlayerTrack) {
   store.dispatch(setCurrent(track));
-  if (!ready || !ytPlayer?.loadVideoById) {
+  if (!ytPlayer) {
+    if (apiLoaded) {
+      initPlayer(track);
+    } else {
+      pendingTrack = track;
+    }
+    return;
+  }
+  if (!ready || !ytPlayer.loadVideoById) {
     pendingTrack = track;
     return;
   }
   ytPlayer.loadVideoById(track.youtube_id);
 }
 
+function playQueue(tracks: PlayerTrack[], index: number) {
+  const track = tracks[index];
+  if (!track) return;
+  store.dispatch(setQueue({ queue: tracks, index }));
+  loadTrack(track);
+}
+
+function play(track: PlayerTrack) {
+  playQueue([track], 0);
+}
+
+function next() {
+  const { queue, queueIndex } = store.getState().player;
+  if (queueIndex + 1 < queue.length) playQueue(queue, queueIndex + 1);
+}
+
+function previous() {
+  const { queue, queueIndex, progress } = store.getState().player;
+  if (progress > 3) {
+    seek(0);
+  } else if (queueIndex > 0) {
+    playQueue(queue, queueIndex - 1);
+  } else {
+    seek(0);
+  }
+}
+
 function toggle() {
-  if (!ytPlayer) return;
+  if (!ytPlayer?.playVideo || !ytPlayer?.pauseVideo) return;
   if (store.getState().player.isPlaying) ytPlayer.pauseVideo();
   else ytPlayer.playVideo();
 }
 
 function seek(sec: number) {
-  if (!ytPlayer) return;
+  if (!ytPlayer?.seekTo) return;
   ytPlayer.seekTo(sec, true);
 }
 
-function stop() {
+export function stop() {
   if (ytPlayer?.stopVideo) ytPlayer.stopVideo();
   store.dispatch(reset());
   stopProgressLoop();
@@ -102,7 +156,13 @@ function stop() {
 export function PlayerProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (window.YT && window.YT.Player) {
-      initPlayer();
+      apiLoaded = true;
+      // A track may already have been requested while the API was still loading.
+      if (pendingTrack) {
+        const track = pendingTrack;
+        pendingTrack = null;
+        initPlayer(track);
+      }
       return;
     }
 
@@ -113,7 +173,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       document.body.appendChild(tag);
     }
 
-    window.onYouTubeIframeAPIReady = () => initPlayer();
+    window.onYouTubeIframeAPIReady = () => {
+      apiLoaded = true;
+      if (pendingTrack) {
+        const track = pendingTrack;
+        pendingTrack = null;
+        initPlayer(track);
+      }
+    };
   }, []);
 
   return (
@@ -128,10 +195,26 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 }
 
 export function usePlayer() {
-  const { current, isPlaying, progress, duration } = useSelector(
-    (state: RootState) => state.player,
-  );
-  return { current, isPlaying, progress, duration, play, toggle, seek, stop };
+  const { current, isPlaying, progress, duration, queue, queueIndex, error } =
+    useSelector((state: RootState) => state.player);
+  const hasNext = queueIndex + 1 < queue.length;
+  const hasPrevious = queueIndex > 0;
+  return {
+    current,
+    isPlaying,
+    progress,
+    duration,
+    hasNext,
+    hasPrevious,
+    error,
+    play,
+    playQueue,
+    toggle,
+    seek,
+    stop,
+    next,
+    previous,
+  };
 }
 
 function formatTime(s: number) {
@@ -144,8 +227,20 @@ function formatTime(s: number) {
 }
 
 function PlayerBar() {
-  const { current, isPlaying, progress, duration, toggle, seek, stop } =
-    usePlayer();
+  const {
+    current,
+    isPlaying,
+    progress,
+    duration,
+    hasNext,
+    hasPrevious,
+    error,
+    toggle,
+    seek,
+    stop,
+    next,
+    previous,
+  } = usePlayer();
   if (!current) return null;
 
   const pct = duration > 0 ? (progress / duration) * 100 : 0;
@@ -165,7 +260,9 @@ function PlayerBar() {
           )}
           <div className="player-track-info">
             <span className="player-track-title">{current.title}</span>
-            {current.artist && (
+            {error ? (
+              <span className="player-track-error">{error}</span>
+            ) : current.artist && (
               <span className="player-track-artist">{current.artist}</span>
             )}
           </div>
@@ -173,11 +270,27 @@ function PlayerBar() {
 
         <div className="player-controls">
           <button
+            className="player-skip"
+            onClick={previous}
+            disabled={!hasPrevious && progress <= 3}
+            aria-label="Previous"
+          >
+            <i className="bi bi-skip-start-fill" />
+          </button>
+          <button
             className="player-play"
             onClick={toggle}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             <i className={`bi bi-${isPlaying ? "pause-fill" : "play-fill"}`} />
+          </button>
+          <button
+            className="player-skip"
+            onClick={next}
+            disabled={!hasNext}
+            aria-label="Next"
+          >
+            <i className="bi bi-skip-end-fill" />
           </button>
           <div className="player-progress">
             <span className="player-time">{formatTime(progress)}</span>

@@ -8,23 +8,24 @@ interface PlaylistCardProp {
 	title: string,
 	created: string,
 	cover: string,
-	firstSong?: ISong
+	songs?: ISong[]
 }
 
 export default function PlaylistCard(props: PlaylistCardProp) {
 	const palylist_href = "/dashboard/playlists/playlist?id=" + props._id
-	const { play } = usePlayer()
+	const { playQueue } = usePlayer()
 
 	const handlePlay = (e: React.MouseEvent) => {
 		e.preventDefault()
 		e.stopPropagation()
-		if (!props.firstSong) return
-		play({
-			youtube_id: props.firstSong.youtube_id,
-			title: props.firstSong.title,
-			artist: props.firstSong.artist,
-			cover: props.cover,
-		})
+		if (!props.songs || props.songs.length === 0) return
+		const queue = props.songs.map((song) => ({
+			youtube_id: song.youtube_id,
+			title: song.title,
+			artist: song.artist,
+			cover: `https://img.youtube.com/vi/${song.youtube_id}/mqdefault.jpg`,
+		}))
+		playQueue(queue, 0)
 	}
 
 	return (

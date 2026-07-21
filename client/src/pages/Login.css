@@ -125,7 +125,7 @@
 	box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-input[type="button"] {
+input[type="submit"] {
 	padding: 0.85rem 1rem;
 	margin-top: 0.5rem;
 	background: var(--accent);
@@ -140,12 +140,12 @@ input[type="button"] {
 	box-shadow: 0 8px 24px var(--accent-glow);
 }
 
-input[type="button"]:hover {
+input[type="submit"]:hover {
 	background: var(--accent-hover);
 	box-shadow: 0 10px 32px var(--accent-glow);
 }
 
-input[type="button"]:active {
+input[type="submit"]:active {
 	transform: translateY(1px);
 }
 

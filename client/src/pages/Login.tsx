@@ -24,7 +24,8 @@ export default function Login() {
 	}, [isAuthenticated])
 
 
-	const handleLogin = async () => {
+	const handleLogin = async (e: React.FormEvent) => {
+		e.preventDefault()
 		try {
 			const response = await login(form.username, form.password);
 
@@ -47,7 +48,7 @@ export default function Login() {
 		<>
 			<ToastContainer />
 			<div className="login-container">
-				<form className="login-form">
+				<form className="login-form" onSubmit={handleLogin}>
 					<h1 className="login-brand">dash<em>cord</em></h1>
 					<p className="login-tagline">Sign in to your library.</p>
 					<div className="input-group">
@@ -65,7 +66,7 @@ export default function Login() {
 								setForm({ ...form, password: e.target.value })
 							}} />
 					</div>
-					<input type="button" value="Sign in" id="loginBtn" onClick={handleLogin} />
+					<input type="submit" value="Sign in" id="loginBtn" />
 					<p className="login-switch">
 						Don't have an account? <Link to="/register">Sign up</Link>
 					</p>

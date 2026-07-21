@@ -24,7 +24,8 @@ export default function Register() {
 			navigate("/dashboard/playlists")
 	}, [isAuthenticated])
 
-	const handleRegister = async () => {
+	const handleRegister = async (e: React.FormEvent) => {
+		e.preventDefault()
 		if (form.username === "" || form.password === "") {
 			showToast("Please fill in all fields.", "error")
 			return
@@ -57,7 +58,7 @@ export default function Register() {
 		<>
 			<ToastContainer />
 			<div className="login-container">
-				<form className="login-form">
+				<form className="login-form" onSubmit={handleRegister}>
 					<h1 className="login-brand">dash<em>cord</em></h1>
 					<p className="login-tagline">Create your library.</p>
 					<div className="input-group">
@@ -82,7 +83,7 @@ export default function Register() {
 								setForm({ ...form, confirmPassword: e.target.value })
 							}} />
 					</div>
-					<input type="button" value="Create account" id="loginBtn" onClick={handleRegister} />
+					<input type="submit" value="Create account" id="loginBtn" />
 					<p className="login-switch">
 						Already have an account? <Link to="/">Sign in</Link>
 					</p>

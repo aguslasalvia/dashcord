@@ -1,16 +1,22 @@
 import "./Profile.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { logout } from "@/lib/auth";
+import { logout, getUserFromStorage } from "@/lib/auth";
+import { getAllPlaylist } from "@/lib/playlist";
 
 export default function Profile() {
 	const navigate = useNavigate();
-	const [profile, setProfile] = useState({
-		username: "Agustin",
-		email: "agustin@email.com",
-	});
+	const username = getUserFromStorage() || "Unknown";
+	const [stats, setStats] = useState({ playlists: 0, songs: 0 });
 
-	const initial = profile.username ? profile.username[0].toUpperCase() : "?"
+	useEffect(() => {
+		getAllPlaylist().then(playlists => {
+			const songs = playlists.reduce((sum, p) => sum + (p.songs?.length ?? 0), 0);
+			setStats({ playlists: playlists.length, songs });
+		});
+	}, []);
+
+	const initial = username ? username[0].toUpperCase() : "?"
 
 	return (
 		<section className="profile-page">
@@ -18,38 +24,19 @@ export default function Profile() {
 				<div className="profile-avatar">{initial}</div>
 				<div className="profile-hero-info">
 					<span className="profile-eyebrow">Profile</span>
-					<h1 className="profile-name">{profile.username}</h1>
+					<h1 className="profile-name">{username}</h1>
 				</div>
 			</div>
 
-			<div className="profile-section">
-				<div className="profile-section-head">
-					<h2>Account</h2>
-					<p>Update your username and email address.</p>
+			<div className="profile-stats">
+				<div className="profile-stat">
+					<span className="profile-stat-num">{stats.playlists}</span>
+					<span className="profile-stat-label">Playlists</span>
 				</div>
-				<div className="profile-section-body">
-					<div className="profile-field">
-						<label htmlFor="username-input">Username</label>
-						<input
-							id="username-input"
-							type="text"
-							value={profile.username}
-							onChange={e => setProfile({ ...profile, username: e.target.value })}
-						/>
-					</div>
-					<div className="profile-field">
-						<label htmlFor="email-input">Email</label>
-						<input
-							id="email-input"
-							type="email"
-							value={profile.email}
-							onChange={e => setProfile({ ...profile, email: e.target.value })}
-						/>
-					</div>
-					<div className="profile-actions">
-						<button className="profile-btn-secondary">Cancel</button>
-						<button className="profile-btn-primary">Save changes</button>
-					</div>
+				<div className="profile-stat-divider"></div>
+				<div className="profile-stat">
+					<span className="profile-stat-num">{stats.songs}</span>
+					<span className="profile-stat-label">Songs saved</span>
 				</div>
 			</div>
 
@@ -72,7 +59,11 @@ export default function Profile() {
 					<p>Permanently delete your account and all your data.</p>
 				</div>
 				<div className="profile-section-body">
-					<button className="profile-btn-danger">
+					<button
+						className="profile-btn-danger"
+						disabled
+						title="Account deletion isn't available yet"
+					>
 						<i className="bi bi-trash"></i>
 						Delete account
 					</button>

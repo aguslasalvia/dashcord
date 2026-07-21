@@ -18,7 +18,7 @@ Desktop app for DashCord: a React 19 + Vite frontend packaged as a native, cross
 ```
 client/
 ├── src/
-│   ├── components/     # Reusable UI (Player, Sidebar, BottomNav, PlaylistCard, SongCard, Toast)
+│   ├── components/     # Reusable UI (Player, Sidebar, PlaylistCard, SongCard, Toast, ConfirmDialog)
 │   ├── pages/           # Route-level views (Login, Playlists, Playlist, Songs, Profile, DashboardLayout)
 │   ├── hooks/           # useAuth, useToast
 │   ├── lib/             # API calls (auth, playlist, songs) + token storage

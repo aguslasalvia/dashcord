@@ -12,6 +12,9 @@ interface PlayerState {
 	isPlaying: boolean
 	progress: number // seconds
 	duration: number // seconds
+	queue: PlayerTrack[]
+	queueIndex: number
+	error: string | null
 }
 
 const initialState: PlayerState = {
@@ -19,6 +22,9 @@ const initialState: PlayerState = {
 	isPlaying: false,
 	progress: 0,
 	duration: 0,
+	queue: [],
+	queueIndex: -1,
+	error: null,
 }
 
 const playerSlice = createSlice({
@@ -29,6 +35,14 @@ const playerSlice = createSlice({
 			state.current = action.payload
 			state.progress = 0
 			state.duration = 0
+			state.error = null
+		},
+		setError(state, action: PayloadAction<string | null>) {
+			state.error = action.payload
+		},
+		setQueue(state, action: PayloadAction<{ queue: PlayerTrack[]; index: number }>) {
+			state.queue = action.payload.queue
+			state.queueIndex = action.payload.index
 		},
 		setIsPlaying(state, action: PayloadAction<boolean>) {
 			state.isPlaying = action.payload
@@ -43,5 +57,5 @@ const playerSlice = createSlice({
 	},
 })
 
-export const { setCurrent, setIsPlaying, setProgress, reset } = playerSlice.actions
+export const { setCurrent, setQueue, setIsPlaying, setProgress, setError, reset } = playerSlice.actions
 export default playerSlice.reducer
