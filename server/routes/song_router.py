@@ -5,11 +5,10 @@ router = APIRouter()
 
 
 @router.get('/search')
-async def search(q: str, current_user: dict = Depends(get_current_user)):
-    return await service.search_songs(q)
-    
+def search(q: str, limit: int = 25, current_user: dict = Depends(get_current_user)):
+    return service.search_songs(q, limit)
 
 
 @router.get('/stream-url')
-async def stream_url(video_id:str,current_user:dict = Depends(get_current_user)):
-    return service.get_audio_stream_url(video_id)
+def stream_url(id: str, current_user: dict = Depends(get_current_user)):
+    return service.get_stream_url(id)
