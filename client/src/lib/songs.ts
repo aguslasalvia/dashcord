@@ -14,7 +14,7 @@ export const searchSong = async (query: string) => {
     },
   );
   if (response.status == 200) {
-    return response.data["result"];
+    return response.data?.["result"] ?? [];
   }
   return [];
 };
