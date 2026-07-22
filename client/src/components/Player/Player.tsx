@@ -1,112 +1,76 @@
-import { useEffect, ReactNode } from "react";
+import { ReactNode } from "react";
 import { useSelector } from "react-redux";
 import { store, RootState } from "@/store/store";
 import {
   setCurrent,
   setQueue,
   setIsPlaying,
+  setLoading,
   setProgress,
   setError,
   reset,
   PlayerTrack,
 } from "@/store/playerSlice";
-import { useToast } from "@/hooks/useToast";
+import { getSongStream } from "@/lib/songs";
 import "./Player.css";
 
 export type { PlayerTrack };
 
-declare global {
-  interface Window {
-    YT: any;
-    onYouTubeIframeAPIReady?: () => void;
+let audio: HTMLAudioElement | null = null;
+let loadToken = 0;
+
+function getAudio(): HTMLAudioElement {
+  if (!audio) {
+    audio = new Audio();
+    audio.preload = "auto";
+    audio.addEventListener("play", () => store.dispatch(setIsPlaying(true)));
+    audio.addEventListener("pause", () => store.dispatch(setIsPlaying(false)));
+    audio.addEventListener("timeupdate", () => {
+      store.dispatch(
+        setProgress({
+          progress: audio!.currentTime,
+          duration: isFinite(audio!.duration) ? audio!.duration : 0,
+        }),
+      );
+    });
+    audio.addEventListener("ended", () => {
+      store.dispatch(setIsPlaying(false));
+      next();
+    });
+    audio.addEventListener("error", () => {
+      store.dispatch(setLoading(false));
+      store.dispatch(setIsPlaying(false));
+      store.dispatch(setError("This song can't be played."));
+      next();
+    });
   }
+  return audio;
 }
 
-let ytPlayer: any = null;
-let apiLoaded = false;
-let ready = false;
-let intervalId: any = null;
-let pendingTrack: PlayerTrack | null = null;
+async function loadTrack(track: PlayerTrack) {
+  const token = ++loadToken;
+  const a = getAudio();
+  a.pause();
 
-function initPlayer(initialTrack?: PlayerTrack) {
-  if (ytPlayer) return;
-  ytPlayer = new window.YT.Player("yt-iframe-target", {
-    height: "1",
-    width: "1",
-    videoId: initialTrack?.youtube_id,
-    playerVars: { playsinline: 1, controls: 0, autoplay: initialTrack ? 1 : 0 },
-    events: {
-      onReady: () => {
-        ready = true;
-        if (pendingTrack) {
-          ytPlayer.loadVideoById(pendingTrack.youtube_id);
-          pendingTrack = null;
-        }
-      },
-      onStateChange: (e: any) => {
-        const YT = window.YT;
-        if (e.data === YT.PlayerState.PLAYING) {
-          store.dispatch(setIsPlaying(true));
-          startProgressLoop();
-        } else if (e.data === YT.PlayerState.PAUSED) {
-          store.dispatch(setIsPlaying(false));
-          stopProgressLoop();
-        } else if (e.data === YT.PlayerState.ENDED) {
-          store.dispatch(setIsPlaying(false));
-          stopProgressLoop();
-          next();
-        }
-      },
-      onError: (e: any) => {
-        const reasons: Record<number, string> = {
-          2: "Invalid video.",
-          5: "This video can't be played here.",
-          100: "This video was not found, is private, or was removed.",
-          101: "This video can't be played outside YouTube.",
-          150: "This video can't be played outside YouTube.",
-        };
-        store.dispatch(setIsPlaying(false));
-        store.dispatch(setError(reasons[e.data] ?? "This video can't be played."));
-        stopProgressLoop();
-        next();
-      },
-    },
-  });
-}
-
-function startProgressLoop() {
-  stopProgressLoop();
-  intervalId = setInterval(() => {
-    if (!ytPlayer?.getCurrentTime || !ytPlayer?.getDuration) return;
-    store.dispatch(
-      setProgress({
-        progress: ytPlayer.getCurrentTime(),
-        duration: ytPlayer.getDuration(),
-      }),
-    );
-  }, 400);
-}
-
-function stopProgressLoop() {
-  if (intervalId) clearInterval(intervalId);
-  intervalId = null;
-}
-
-function loadTrack(track: PlayerTrack) {
   store.dispatch(setCurrent(track));
-  if (!ytPlayer) {
-    if (apiLoaded) {
-      initPlayer(track);
-    } else {
-      pendingTrack = track;
-    }
+  store.dispatch(setLoading(true));
+
+  const url = await getSongStream(track.youtube_id);
+  if (token !== loadToken) return;
+
+  store.dispatch(setLoading(false));
+
+  if (!url) {
+    store.dispatch(setError("This song can't be played."));
+    next();
     return;
   }
-  if (!ready || !ytPlayer.loadVideoById) {
-    pendingTrack = track;
-    return;
-  }
-  ytPlayer.loadVideoById(track.youtube_id);
+
+  a.src = url;
+  a.currentTime = 0;
+  a.play().catch(() => {
+    store.dispatch(setError("Playback was blocked by the browser."));
+  });
 }
 
 function playQueue(tracks: PlayerTrack[], index: number) {
@@ -137,71 +101,49 @@ function previous() {
 }
 
 function toggle() {
-  if (!ytPlayer?.playVideo || !ytPlayer?.pauseVideo) return;
-  if (store.getState().player.isPlaying) ytPlayer.pauseVideo();
-  else ytPlayer.playVideo();
+  const a = getAudio();
+  if (!a.src) return;
+  if (a.paused) {
+    a.play().catch(() => store.dispatch(setError("Playback was blocked by the browser.")));
+  } else {
+    a.pause();
+  }
 }
 
 function seek(sec: number) {
-  if (!ytPlayer?.seekTo) return;
-  ytPlayer.seekTo(sec, true);
+  const a = getAudio();
+  if (!a.src) return;
+  a.currentTime = sec;
 }
 
 export function stop() {
-  if (ytPlayer?.stopVideo) ytPlayer.stopVideo();
+  loadToken++;
+  if (audio) {
+    audio.pause();
+    audio.removeAttribute("src");
+    audio.load();
+  }
   store.dispatch(reset());
-  stopProgressLoop();
 }
 
 export function PlayerProvider({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    if (window.YT && window.YT.Player) {
-      apiLoaded = true;
-      // A track may already have been requested while the API was still loading.
-      if (pendingTrack) {
-        const track = pendingTrack;
-        pendingTrack = null;
-        initPlayer(track);
-      }
-      return;
-    }
-
-    if (!document.getElementById("yt-iframe-api")) {
-      const tag = document.createElement("script");
-      tag.id = "yt-iframe-api";
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-    }
-
-    window.onYouTubeIframeAPIReady = () => {
-      apiLoaded = true;
-      if (pendingTrack) {
-        const track = pendingTrack;
-        pendingTrack = null;
-        initPlayer(track);
-      }
-    };
-  }, []);
-
   return (
     <>
       {children}
-      <div className="yt-iframe-host" aria-hidden="true">
-        <div id="yt-iframe-target" />
-      </div>
       <PlayerBar />
     </>
   );
 }
 
 export function usePlayer() {
-  const { current, isPlaying, progress, duration, queue, queueIndex, error } =
+  const { current, isPlaying, isLoading, progress, duration, queue, queueIndex, error } =
     useSelector((state: RootState) => state.player);
   const hasNext = queueIndex + 1 < queue.length;
   const hasPrevious = queueIndex > 0;
   return {
     current,
     isPlaying,
+    isLoading,
     progress,
     duration,
     hasNext,
@@ -230,6 +172,7 @@ function PlayerBar() {
   const {
     current,
     isPlaying,
+    isLoading,
     progress,
     duration,
     hasNext,
@@ -262,6 +205,8 @@ function PlayerBar() {
             <span className="player-track-title">{current.title}</span>
             {error ? (
               <span className="player-track-error">{error}</span>
+            ) : isLoading ? (
+              <span className="player-track-artist">Loading…</span>
             ) : current.artist && (
               <span className="player-track-artist">{current.artist}</span>
             )}
@@ -280,9 +225,12 @@ function PlayerBar() {
           <button
             className="player-play"
             onClick={toggle}
+            disabled={isLoading}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <i className={`bi bi-${isPlaying ? "pause-fill" : "play-fill"}`} />
+            <i
+              className={`bi bi-${isLoading ? "arrow-repeat player-spinner" : isPlaying ? "pause-fill" : "play-fill"}`}
+            />
           </button>
           <button
             className="player-skip"
