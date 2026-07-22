@@ -1,8 +1,7 @@
 from youtubesearchpython import VideosSearch
 from typing import Optional, Dict, Any, Union
 
-
-async def search_video_urls(filter_text: str, limit: int = 25) -> Optional[Union[Dict[str, Any], str]]:
+def search_video_urls(filter_text: str, limit: int = 25) -> Optional[Union[Dict[str, Any], str]]:
     try:
         search_result = VideosSearch(filter_text.strip(), limit=limit).result()
 

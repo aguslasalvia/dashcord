@@ -15,5 +15,23 @@ export const searchSong = async (query: string) => {
   );
   if (response.status == 200) {
     return response.data["result"];
-  } else return [];
+  }
+  return [];
 };
+
+
+export const getSongStream = async (videoId: string) => {
+  let token = getToken();
+  const response = await axios.get(
+    API_URL + "/songs/stream-url", {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+    params: { id: videoId }
+  });
+  if (response.status == 200) {
+    return response.data.url;
+  }
+  return null;
+
+}
