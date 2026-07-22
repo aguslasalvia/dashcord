@@ -30,6 +30,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Set version from tag
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          jq --arg v "$VERSION" '.version = $v' client/src-tauri/tauri.conf.json > tmp.json && mv tmp.json client/src-tauri/tauri.conf.json
+          jq --arg v "$VERSION" '.version = $v' client/package.json > tmp.json && mv tmp.json client/package.json
+          sed -i.bak "s/^version = \".*\"/version = \"$VERSION\"/" client/src-tauri/Cargo.toml && rm client/src-tauri/Cargo.toml.bak
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
