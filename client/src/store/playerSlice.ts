@@ -10,6 +10,7 @@ export type PlayerTrack = {
 interface PlayerState {
 	current: PlayerTrack | null
 	isPlaying: boolean
+	isLoading: boolean
 	progress: number // seconds
 	duration: number // seconds
 	queue: PlayerTrack[]
@@ -20,6 +21,7 @@ interface PlayerState {
 const initialState: PlayerState = {
 	current: null,
 	isPlaying: false,
+	isLoading: false,
 	progress: 0,
 	duration: 0,
 	queue: [],
@@ -47,6 +49,9 @@ const playerSlice = createSlice({
 		setIsPlaying(state, action: PayloadAction<boolean>) {
 			state.isPlaying = action.payload
 		},
+		setLoading(state, action: PayloadAction<boolean>) {
+			state.isLoading = action.payload
+		},
 		setProgress(state, action: PayloadAction<{ progress: number; duration: number }>) {
 			state.progress = action.payload.progress
 			state.duration = action.payload.duration
@@ -57,5 +62,5 @@ const playerSlice = createSlice({
 	},
 })
 
-export const { setCurrent, setQueue, setIsPlaying, setProgress, setError, reset } = playerSlice.actions
+export const { setCurrent, setQueue, setIsPlaying, setLoading, setProgress, setError, reset } = playerSlice.actions
 export default playerSlice.reducer
