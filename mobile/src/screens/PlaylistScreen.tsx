@@ -19,6 +19,9 @@ import type { MainStackParamList } from "@/navigation/types";
 
 type PlaylistRouteProp = RouteProp<MainStackParamList, "Playlist">;
 
+// Shows one playlist: its cover, its songs, and controls to play, delete
+// a song, or delete the whole playlist. Reached by tapping a playlist
+// card — the id comes from the navigation route params.
 export default function PlaylistScreen() {
   const navigation = useNavigation<any>();
   const route = useRoute<PlaylistRouteProp>();
@@ -64,6 +67,8 @@ export default function PlaylistScreen() {
   };
 
   const handleDeletePlaylist = async () => {
+    // The backend reuses the "delete a song" endpoint for "delete the
+    // whole playlist" when you pass an empty song id.
     const ok = await deleteSongsFromPlaylistByID(id, "");
     if (ok) {
       showToast("Playlist deleted", "success");

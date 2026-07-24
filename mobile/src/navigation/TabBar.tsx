@@ -1,30 +1,56 @@
+import { useEffect } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { colors, radius } from "@/theme/colors";
 
-// Picks which icon to show for each tab. A plain function is easier to read
-// here than a lookup object with fancy TypeScript types.
-function getTabIcon(tabName: string): keyof typeof Ionicons.glyphMap {
-  if (tabName === "Library") return "albums";
-  if (tabName === "Discover") return "search";
-  return "person";
+// Picks which icon to show for each tab, swapping to the filled variant
+// when the tab is focused so the active state reads clearly.
+function getTabIcon(tabName: string, focused: boolean): keyof typeof Ionicons.glyphMap {
+  if (tabName === "Library") return focused ? "albums" : "albums-outline";
+  if (tabName === "Discover") return focused ? "search" : "search-outline";
+  return focused ? "person" : "person-outline";
 }
 
 interface TabBarProps extends BottomTabBarProps {
   bottom: number;
 }
 
-// A small icon-only floating pill, centered at the bottom of the screen.
-// This is passed as the custom `tabBar` for the bottom tab navigator in
+const ITEM_SIZE = 48;
+const GAP = 34;
+const PADDING = 12;
+const STEP = ITEM_SIZE + GAP;
+
+// A floating pill tab bar, centered at the bottom of the screen, with a
+// soft accent-tinted highlight that slides behind whichever tab is active.
+// Passed as the custom `tabBar` for the bottom tab navigator in
 // MainTabs.tsx, so React Navigation calls it with `state`/`navigation`
 // instead of rendering its own default tab bar.
 export default function TabBar({ state, navigation, bottom }: TabBarProps) {
+  const indicatorX = useSharedValue(state.index * STEP);
+
+  useEffect(() => {
+    indicatorX.value = withSpring(state.index * STEP, { damping: 18, stiffness: 220, mass: 0.6 });
+  }, [state.index, indicatorX]);
+
+  const indicatorStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: indicatorX.value }],
+  }));
+
   return (
     // pointerEvents="box-none" means taps outside the pill (but inside this
     // full-width wrapper) pass through to whatever is underneath.
     <View style={[styles.wrap, { bottom }]} pointerEvents="box-none">
       <View style={styles.bar}>
+        <LinearGradient
+          colors={["rgba(255,255,255,0.07)", "rgba(255,255,255,0)"]}
+          style={styles.sheen}
+          pointerEvents="none"
+        />
+        <Animated.View style={[styles.indicator, indicatorStyle]} />
+
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
 
@@ -38,11 +64,10 @@ export default function TabBar({ state, navigation, bottom }: TabBarProps) {
           return (
             <Pressable key={route.key} onPress={onPress} style={styles.item} hitSlop={8}>
               <Ionicons
-                name={getTabIcon(route.name)}
-                size={22}
+                name={getTabIcon(route.name, isFocused)}
+                size={21}
                 color={isFocused ? colors.accent : colors.textFaint}
               />
-              <View style={[styles.dot, isFocused && styles.dotFocused]} />
             </Pressable>
           );
         })}
@@ -61,30 +86,41 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 26,
-    backgroundColor: colors.bgElev2,
+    gap: GAP,
+    padding: PADDING,
+    backgroundColor: "rgba(31, 31, 40, 0.92)",
     borderRadius: radius.full,
     borderWidth: 1,
     borderColor: colors.borderStrong,
-    paddingHorizontal: 26,
-    paddingVertical: 14,
-    shadowColor: "#000",
-    shadowOpacity: 0.4,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 14,
+    overflow: "hidden",
+    shadowColor: colors.accent,
+    shadowOpacity: 0.22,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 16,
+  },
+  sheen: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "55%",
+  },
+  indicator: {
+    position: "absolute",
+    top: PADDING,
+    left: PADDING,
+    width: ITEM_SIZE,
+    height: ITEM_SIZE,
+    borderRadius: ITEM_SIZE / 2,
+    backgroundColor: colors.accentSoft,
+    borderWidth: 1,
+    borderColor: "rgba(244, 63, 94, 0.35)",
   },
   item: {
+    width: ITEM_SIZE,
+    height: ITEM_SIZE,
     alignItems: "center",
-    gap: 5,
-  },
-  dot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: "transparent",
-  },
-  dotFocused: {
-    backgroundColor: colors.accent,
+    justifyContent: "center",
   },
 });

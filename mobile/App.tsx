@@ -16,6 +16,8 @@ import { ToastProvider } from "@/hooks/useToast";
 import RootNavigator from "@/navigation/RootNavigator";
 import EqualizerBars from "@/components/EqualizerBars";
 
+// Tells React Navigation to use our dark colors for things it renders
+// itself, like screen headers and the background behind screens.
 const navigationTheme: Theme = {
   ...DarkTheme,
   colors: {
@@ -29,6 +31,9 @@ const navigationTheme: Theme = {
   },
 };
 
+// The very top of the app. Sets up everything every screen needs: the
+// Redux store, safe-area info, auth state, toasts, and navigation — then
+// waits for our custom fonts to finish loading before showing anything.
 export default function App() {
   const [fontsLoaded] = useFonts({
     SpaceGrotesk_500Medium,

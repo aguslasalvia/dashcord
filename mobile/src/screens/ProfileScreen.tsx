@@ -9,12 +9,16 @@ import { usePlayer } from "@/player/audioEngine";
 import ScreenGlow from "@/components/ScreenGlow";
 import { TAB_BAR_HEIGHT, TAB_BAR_MARGIN, PLAYER_BAR_HEIGHT, FLOATING_GAP } from "@/navigation/layout";
 
+// The "Profile" tab: shows the signed-in user, some quick stats about
+// their library, and the sign out / delete account actions.
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { username, signOut } = useAuth();
   const { current } = usePlayer();
   const [stats, setStats] = useState({ playlists: 0, songs: 0 });
 
+  // There's no dedicated "stats" endpoint, so we just fetch every playlist
+  // and count them up ourselves.
   useEffect(() => {
     getAllPlaylist().then((playlists) => {
       const songs = playlists.reduce((sum, p) => sum + (p.songs?.length ?? 0), 0);
@@ -22,6 +26,7 @@ export default function ProfileScreen() {
     });
   }, []);
 
+  // Used for the round avatar bubble, e.g. "agus" -> "A".
   const initial = username ? username[0].toUpperCase() : "?";
 
   const bottomReserve =
