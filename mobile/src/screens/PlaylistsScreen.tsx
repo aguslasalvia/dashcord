@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { Library, Plus, Search, X } from "lucide-react-native";
 import { colors, fonts, radius } from "@/theme/colors";
 import PlaylistCard from "@/components/PlaylistCard";
 import EqualizerBars from "@/components/EqualizerBars";
@@ -101,12 +101,12 @@ export default function PlaylistsScreen() {
           onPress={() => setIsModalOpen(true)}
           hitSlop={6}
         >
-          <Ionicons name="add" size={22} color={colors.accentInk} />
+          <Plus size={22} color={colors.accentInk} />
         </Pressable>
       </View>
 
       <View style={styles.searchWrap}>
-        <Ionicons name="search" size={17} color={colors.textFaint} />
+        <Search size={17} color={colors.textFaint} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name…"
@@ -142,11 +142,11 @@ export default function PlaylistsScreen() {
       ) : (
         <View style={styles.empty}>
           <View style={styles.emptyIcon}>
-            <Ionicons
-              name={playlists.length > 0 && search ? "search" : "albums-outline"}
-              size={26}
-              color={colors.textFaint}
-            />
+            {playlists.length > 0 && search ? (
+              <Search size={26} color={colors.textFaint} />
+            ) : (
+              <Library size={26} color={colors.textFaint} />
+            )}
           </View>
           <Text style={styles.emptyText}>
             {playlists.length > 0
@@ -162,7 +162,7 @@ export default function PlaylistsScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>New playlist</Text>
               <Pressable onPress={() => setIsModalOpen(false)} hitSlop={8}>
-                <Ionicons name="close" size={20} color={colors.textMuted} />
+                <X size={20} color={colors.textMuted} />
               </Pressable>
             </View>
             <Text style={styles.label}>Name</Text>

@@ -1,17 +1,15 @@
 import { useEffect } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Library, LucideIcon, Search, User } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { colors, radius } from "@/theme/colors";
 
-// Picks which icon to show for each tab, swapping to the filled variant
-// when the tab is focused so the active state reads clearly.
-function getTabIcon(tabName: string, focused: boolean): keyof typeof Ionicons.glyphMap {
-  if (tabName === "Library") return focused ? "albums" : "albums-outline";
-  if (tabName === "Discover") return focused ? "search" : "search-outline";
-  return focused ? "person" : "person-outline";
+function getTabIcon(tabName: string): LucideIcon {
+  if (tabName === "Library") return Library;
+  if (tabName === "Discover") return Search;
+  return User;
 }
 
 interface TabBarProps extends BottomTabBarProps {
@@ -53,6 +51,7 @@ export default function TabBar({ state, navigation, bottom }: TabBarProps) {
 
         {state.routes.map((route, index) => {
           const isFocused = state.index === index;
+          const TabIcon = getTabIcon(route.name);
 
           const onPress = () => {
             const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
@@ -63,10 +62,10 @@ export default function TabBar({ state, navigation, bottom }: TabBarProps) {
 
           return (
             <Pressable key={route.key} onPress={onPress} style={styles.item} hitSlop={8}>
-              <Ionicons
-                name={getTabIcon(route.name, isFocused)}
+              <TabIcon
                 size={21}
                 color={isFocused ? colors.accent : colors.textFaint}
+                strokeWidth={isFocused ? 2.4 : 2}
               />
             </Pressable>
           );

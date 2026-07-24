@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Music2, Pause, Play, SkipBack, SkipForward, X } from "lucide-react-native";
 import { colors, radius } from "@/theme/colors";
 import { usePlayer } from "@/player/audioEngine";
 import { TAB_BAR_MARGIN } from "@/navigation/layout";
@@ -51,7 +51,7 @@ export default function PlayerBar({ bottom }: PlayerBarProps) {
           <Image source={{ uri: current.cover }} style={styles.cover} />
         ) : (
           <View style={[styles.cover, styles.coverPlaceholder]}>
-            <Ionicons name="musical-note" size={16} color={colors.textFaint} />
+            <Music2 size={16} color={colors.textFaint} />
           </View>
         )}
         <View style={styles.info}>
@@ -74,23 +74,33 @@ export default function PlayerBar({ bottom }: PlayerBarProps) {
         </View>
 
         <Pressable onPress={previous} disabled={!hasPrevious} hitSlop={8} style={styles.controlBtn}>
-          <Ionicons name="play-skip-back" size={16} color={hasPrevious ? colors.text : colors.textFaint} />
+          <SkipBack
+            size={16}
+            color={hasPrevious ? colors.text : colors.textFaint}
+            fill={hasPrevious ? colors.text : colors.textFaint}
+          />
         </Pressable>
 
         <Pressable onPress={toggle} disabled={isLoading} hitSlop={8} style={styles.playBtn}>
           {isLoading ? (
             <EqualizerBars size="sm" color={colors.accentInk} />
+          ) : isPlaying ? (
+            <Pause size={17} color={colors.accentInk} fill={colors.accentInk} />
           ) : (
-            <Ionicons name={isPlaying ? "pause" : "play"} size={17} color={colors.accentInk} />
+            <Play size={17} color={colors.accentInk} fill={colors.accentInk} />
           )}
         </Pressable>
 
         <Pressable onPress={next} disabled={!hasNext} hitSlop={8} style={styles.controlBtn}>
-          <Ionicons name="play-skip-forward" size={16} color={hasNext ? colors.text : colors.textFaint} />
+          <SkipForward
+            size={16}
+            color={hasNext ? colors.text : colors.textFaint}
+            fill={hasNext ? colors.text : colors.textFaint}
+          />
         </Pressable>
 
         <Pressable onPress={stop} hitSlop={8} style={styles.controlBtn}>
-          <Ionicons name="close" size={18} color={colors.textMuted} />
+          <X size={18} color={colors.textMuted} />
         </Pressable>
       </View>
       <View style={styles.timeRow}>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import { ArrowRight, ChevronRight, Library, Music2, Search, X } from "lucide-react-native";
 import { colors, fonts, radius } from "@/theme/colors";
 import SongCard from "@/components/SongCard";
 import EqualizerBars from "@/components/EqualizerBars";
@@ -109,7 +109,7 @@ export default function SongsScreen() {
 
       <View style={styles.searchRow}>
         <View style={styles.searchWrap}>
-          <Ionicons name="search" size={17} color={colors.textFaint} />
+          <Search size={17} color={colors.textFaint} />
           <TextInput
             style={styles.searchInput}
             placeholder="Song or artist…"
@@ -124,7 +124,7 @@ export default function SongsScreen() {
           style={({ pressed }) => [styles.searchBtn, pressed && styles.pressed]}
           onPress={handleSearch}
         >
-          <Ionicons name="arrow-forward" size={20} color={colors.accentInk} />
+          <ArrowRight size={20} color={colors.accentInk} />
         </Pressable>
       </View>
 
@@ -152,14 +152,14 @@ export default function SongsScreen() {
       ) : hasSearched ? (
         <View style={styles.empty}>
           <View style={styles.emptyIcon}>
-            <Ionicons name="musical-notes-outline" size={26} color={colors.textFaint} />
+            <Music2 size={26} color={colors.textFaint} />
           </View>
           <Text style={styles.emptyText}>Nothing turned up for "{query}". Try another search.</Text>
         </View>
       ) : (
         <View style={styles.empty}>
           <View style={styles.emptyIcon}>
-            <Ionicons name="search" size={26} color={colors.textFaint} />
+            <Search size={26} color={colors.textFaint} />
           </View>
           <Text style={styles.emptyText}>Search any song or artist to start queuing tracks.</Text>
         </View>
@@ -171,7 +171,7 @@ export default function SongsScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Add to playlist</Text>
               <Pressable onPress={handleCloseModal} hitSlop={8}>
-                <Ionicons name="close" size={20} color={colors.textMuted} />
+                <X size={20} color={colors.textMuted} />
               </Pressable>
             </View>
             {playlists.length === 0 ? (
@@ -188,10 +188,10 @@ export default function SongsScreen() {
                     onPress={() => item._id && handleAddSongToPlaylist(item._id)}
                   >
                     <View style={styles.playlistOptionIcon}>
-                      <Ionicons name="albums-outline" size={18} color={colors.accent} />
+                      <Library size={18} color={colors.accent} />
                     </View>
                     <Text style={styles.playlistOptionLabel}>{item.name}</Text>
-                    <Ionicons name="chevron-forward" size={18} color={colors.textFaint} />
+                    <ChevronRight size={18} color={colors.textFaint} />
                   </Pressable>
                 )}
               />

@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { ExternalLink, Link2, Pause, Play, Plus } from "lucide-react-native";
 import { colors, fonts, radius } from "@/theme/colors";
 import { usePlayer } from "@/player/audioEngine";
 import { PlayerTrack } from "@/store/playerSlice";
@@ -51,7 +51,11 @@ export default function SongCard(props: SongCardProps) {
           style={styles.cover}
         />
         <View style={styles.playOverlay}>
-          <Ionicons name={isCurrent && isPlaying ? "pause" : "play"} size={16} color={colors.accentInk} />
+          {isCurrent && isPlaying ? (
+            <Pause size={16} color={colors.accentInk} fill={colors.accentInk} />
+          ) : (
+            <Play size={16} color={colors.accentInk} fill={colors.accentInk} />
+          )}
         </View>
       </View>
 
@@ -68,13 +72,13 @@ export default function SongCard(props: SongCardProps) {
 
       <View style={styles.actions}>
         <Pressable style={styles.actionBtn} onPress={handleCopy} hitSlop={6}>
-          <Ionicons name="link" size={17} color={colors.textMuted} />
+          <Link2 size={17} color={colors.textMuted} />
         </Pressable>
         <Pressable style={styles.actionBtn} onPress={() => openExternal(youtubeLink)} hitSlop={6}>
-          <Ionicons name="logo-youtube" size={17} color={colors.textMuted} />
+          <ExternalLink size={17} color={colors.textMuted} />
         </Pressable>
         <Pressable style={styles.addBtn} onPress={handleAddPlaylist} hitSlop={6}>
-          <Ionicons name="add" size={18} color={colors.accentInk} />
+          <Plus size={18} color={colors.accentInk} />
         </Pressable>
       </View>
     </Pressable>

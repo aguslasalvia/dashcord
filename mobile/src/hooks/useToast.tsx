@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import { CircleCheck, CircleX, Info, LucideIcon, TriangleAlert } from "lucide-react-native";
 import { colors, radius } from "@/theme/colors";
 
 export type ToastType = "success" | "error" | "warning" | "info";
@@ -18,11 +18,11 @@ interface ToastContextValue {
 
 const ToastContext = createContext<ToastContextValue | null>(null);
 
-function getToastIcon(type: ToastType): keyof typeof Ionicons.glyphMap {
-  if (type === "success") return "checkmark-circle";
-  if (type === "error") return "close-circle";
-  if (type === "warning") return "warning";
-  return "information-circle";
+function getToastIcon(type: ToastType): LucideIcon {
+  if (type === "success") return CircleCheck;
+  if (type === "error") return CircleX;
+  if (type === "warning") return TriangleAlert;
+  return Info;
 }
 
 function getToastColor(type: ToastType): string {
@@ -54,17 +54,20 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     <ToastContext.Provider value={{ showToast }}>
       {children}
       <SafeAreaView style={styles.container} pointerEvents="box-none">
-        {toasts.map((toast) => (
-          <TouchableOpacity
-            key={toast.id}
-            style={[styles.toast, { borderColor: getToastColor(toast.type) }]}
-            onPress={() => removeToast(toast.id)}
-            activeOpacity={0.85}
-          >
-            <Ionicons name={getToastIcon(toast.type)} size={18} color={getToastColor(toast.type)} />
-            <Text style={styles.message}>{toast.message}</Text>
-          </TouchableOpacity>
-        ))}
+        {toasts.map((toast) => {
+          const ToastIcon = getToastIcon(toast.type);
+          return (
+            <TouchableOpacity
+              key={toast.id}
+              style={[styles.toast, { borderColor: getToastColor(toast.type) }]}
+              onPress={() => removeToast(toast.id)}
+              activeOpacity={0.85}
+            >
+              <ToastIcon size={18} color={getToastColor(toast.type)} />
+              <Text style={styles.message}>{toast.message}</Text>
+            </TouchableOpacity>
+          );
+        })}
       </SafeAreaView>
     </ToastContext.Provider>
   );

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import { LogOut, Trash2, User } from "lucide-react-native";
 import { colors, fonts, radius } from "@/theme/colors";
 import { getAllPlaylist } from "@/lib/playlist";
 import { useAuth } from "@/hooks/useAuth";
@@ -44,7 +44,10 @@ export default function ProfileScreen() {
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 20, paddingBottom: bottomReserve }]}
         showsVerticalScrollIndicator={false}
       >
-      <Text style={styles.eyebrow}>Profile</Text>
+      <View style={styles.eyebrowRow}>
+        <User size={13} color={colors.accent} strokeWidth={2.5} />
+        <Text style={styles.eyebrow}>Profile</Text>
+      </View>
 
       <View style={styles.hero}>
         <View style={styles.avatar}>
@@ -68,7 +71,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <View style={styles.sectionRow}>
           <View style={styles.sectionIcon}>
-            <Ionicons name="log-out-outline" size={18} color={colors.text} />
+            <LogOut size={18} color={colors.text} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={styles.sectionTitle}>Session</Text>
@@ -86,7 +89,7 @@ export default function ProfileScreen() {
       <View style={styles.section}>
         <View style={styles.sectionRow}>
           <View style={[styles.sectionIcon, styles.dangerIcon]}>
-            <Ionicons name="trash" size={17} color={colors.danger} />
+            <Trash2 size={17} color={colors.danger} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[styles.sectionTitle, styles.dangerTitle]}>Danger zone</Text>
@@ -110,13 +113,18 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: 20,
   },
+  eyebrowRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: 16,
+  },
   eyebrow: {
     color: colors.accent,
     fontSize: 12,
     fontWeight: "700",
     textTransform: "uppercase",
     letterSpacing: 1.2,
-    marginBottom: 16,
   },
   hero: {
     alignItems: "center",

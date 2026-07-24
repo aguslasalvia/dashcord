@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Eye, EyeOff, Lock, User } from "lucide-react-native";
 import { colors, fonts } from "@/theme/colors";
 import { login } from "@/lib/auth";
 import { useAuth } from "@/hooks/useAuth";
@@ -62,7 +63,7 @@ export default function LoginScreen() {
 
           <Animated.View entering={FadeInDown.delay(120).duration(400)} style={styles.form}>
             <AuthField
-              icon="person-outline"
+              icon={User}
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
@@ -71,8 +72,8 @@ export default function LoginScreen() {
               returnKeyType="next"
             />
             <AuthField
-              icon="lock-closed-outline"
-              rightIcon={showPassword ? "eye-off-outline" : "eye-outline"}
+              icon={Lock}
+              rightIcon={showPassword ? EyeOff : Eye}
               onRightIconPress={() => setShowPassword((v) => !v)}
               value={password}
               onChangeText={setPassword}

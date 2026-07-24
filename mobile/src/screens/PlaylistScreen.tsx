@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { FlatList, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { Ionicons } from "@expo/vector-icons";
+import { ExternalLink, Library, Link2, ListMusic, Play, Trash2 } from "lucide-react-native";
 import * as Clipboard from "expo-clipboard";
 import { colors, fonts, radius } from "@/theme/colors";
 import { getPlaylistByID, deleteSongsFromPlaylistByID } from "@/lib/playlist";
@@ -108,10 +108,13 @@ export default function PlaylistScreen() {
           <Image source={{ uri: cover }} style={styles.cover} />
         ) : (
           <View style={[styles.cover, styles.coverPlaceholder]}>
-            <Ionicons name="albums" size={32} color={colors.textFaint} />
+            <Library size={32} color={colors.textFaint} />
           </View>
         )}
-        <Text style={styles.label}>Playlist</Text>
+        <View style={styles.labelRow}>
+          <ListMusic size={12} color={colors.accent} strokeWidth={2.5} />
+          <Text style={styles.label}>Playlist</Text>
+        </View>
         <Text style={styles.title}>{playlist.name}</Text>
         <Text style={styles.meta}>
           {playlist.created_by} · {playlist.songs.length} {playlist.songs.length === 1 ? "song" : "songs"}
@@ -122,14 +125,14 @@ export default function PlaylistScreen() {
             onPress={() => playSong(0)}
             disabled={playlist.songs.length === 0}
           >
-            <Ionicons name="play" size={18} color={colors.accentInk} />
+            <Play size={18} color={colors.accentInk} fill={colors.accentInk} />
             <Text style={styles.playLabel}>Play</Text>
           </Pressable>
           <Pressable
             style={({ pressed }) => [styles.deleteBtn, pressed && styles.pressed]}
             onPress={() => setConfirmDeletePlaylist(true)}
           >
-            <Ionicons name="trash" size={18} color={colors.danger} />
+            <Trash2 size={18} color={colors.danger} />
           </Pressable>
         </View>
       </View>
@@ -171,17 +174,17 @@ export default function PlaylistScreen() {
                   onPress={() => openExternal(`https://www.youtube.com/watch?v=${item.youtube_id}`)}
                   hitSlop={6}
                 >
-                  <Ionicons name="logo-youtube" size={18} color={colors.textMuted} />
+                  <ExternalLink size={18} color={colors.textMuted} />
                 </Pressable>
                 <Pressable style={styles.songAction} onPress={() => handleCopy(item)} hitSlop={6}>
-                  <Ionicons name="link" size={18} color={colors.textMuted} />
+                  <Link2 size={18} color={colors.textMuted} />
                 </Pressable>
                 <Pressable
                   style={styles.songAction}
                   onPress={() => setSongToDelete(item.youtube_id)}
                   hitSlop={6}
                 >
-                  <Ionicons name="trash-outline" size={18} color={colors.danger} />
+                  <Trash2 size={18} color={colors.danger} />
                 </Pressable>
               </Pressable>
             );
@@ -236,6 +239,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgElev2,
     alignItems: "center",
     justifyContent: "center",
+  },
+  labelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   label: {
     color: colors.accent,
