@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { useToast } from "@/hooks/useToast"
 import { useAuth } from "@/hooks/useAuth"
+import EqualizerBars from "@/components/EqualizerBars/EqualizerBars"
 
 import { saveToken } from "@/lib/token"
 import { login } from "@/lib/auth"
@@ -49,8 +50,11 @@ export default function Login() {
 			<ToastContainer />
 			<div className="login-container">
 				<form className="login-form" onSubmit={handleLogin}>
-					<h1 className="login-brand">dash<em>cord</em></h1>
-					<p className="login-tagline">Sign in to your library.</p>
+					<div className="login-hero">
+						<EqualizerBars size="hero" />
+						<h1 className="login-brand">dash<em>cord</em></h1>
+						<p className="login-tagline">Sign in to your library.</p>
+					</div>
 					<div className="input-group">
 						<label htmlFor="username">Username</label>
 						<input type="text" id="username" name="username" required

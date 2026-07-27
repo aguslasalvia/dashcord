@@ -1,5 +1,6 @@
 import './Playlists.css'
 import PlaylistCard from '@/components/PlaylistCard/PlaylistCard';
+import EqualizerBars from '@/components/EqualizerBars/EqualizerBars';
 import { createPlaylist, getAllPlaylist } from '@/lib/playlist';
 import { IPlaylist } from '@/types';
 import { useEffect, useState } from 'react';
@@ -110,7 +111,10 @@ export default function Playlists() {
 			<div className="playlists-music-grid" id="music-grid">
 				{
 					loading ? (
-						<div className="playlists-empty">Loading playlists…</div>
+						<div className="playlists-empty">
+							<EqualizerBars size="md" />
+							<p>Loading playlists…</p>
+						</div>
 					) : filteredPlaylists.length > 0 ? (
 						filteredPlaylists.map((playlist: any, index) => {
 							let cover = playlist.cover;

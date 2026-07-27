@@ -12,6 +12,7 @@ import {
   PlayerTrack,
 } from "@/store/playerSlice";
 import { getSongStream } from "@/lib/songs";
+import EqualizerBars from "@/components/EqualizerBars/EqualizerBars";
 import "./Player.css";
 
 export type { PlayerTrack };
@@ -228,9 +229,11 @@ function PlayerBar() {
             disabled={isLoading}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            <i
-              className={`bi bi-${isLoading ? "arrow-repeat player-spinner" : isPlaying ? "pause-fill" : "play-fill"}`}
-            />
+            {isLoading ? (
+              <EqualizerBars size="sm" color="currentColor" />
+            ) : (
+              <i className={`bi bi-${isPlaying ? "pause-fill" : "play-fill"}`} />
+            )}
           </button>
           <button
             className="player-skip"

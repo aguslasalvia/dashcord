@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/useToast";
 import { IPlaylist } from "@/types";
 import { usePlayer } from "@/components/Player/Player";
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
+import EqualizerBars from "@/components/EqualizerBars/EqualizerBars";
 import { openExternal } from "@/lib/shell";
 import "./Playlist.css";
 
@@ -208,7 +209,10 @@ export default function Playlist() {
           </div>
         </>
       ) : (
-        <div className="playlist-visor-loading">Loading playlist…</div>
+        <div className="playlist-visor-loading">
+          <EqualizerBars size="md" />
+          <p>Loading playlist…</p>
+        </div>
       )}
 
       <ConfirmDialog
