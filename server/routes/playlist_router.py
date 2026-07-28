@@ -54,3 +54,11 @@ async def delete_song_from_playlist(data: dict, current_user: dict = Depends(get
     if response:
         return Response(status_code=204)
     return JSONResponse({"error": "Unable to delete song from playlist"}, 400)
+
+
+@router.delete("/playlist")
+async def delete_playlist(id: str, current_user: dict = Depends(get_current_user)):
+    response = await service.delete_playlist(id)
+    if response:
+        return Response(status_code=204)
+    return JSONResponse({"error": "Unable to delete playlist"}, 400)

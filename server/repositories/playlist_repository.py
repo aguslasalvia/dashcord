@@ -66,6 +66,11 @@ async def delete_song_from_playlist(playlist_id: str, song_id: str):
     return True
 
 
+async def delete_playlist(playlist_id: str):
+    result = await db.playlist_collection.delete_one({"_id": ObjectId(playlist_id)})
+    return result.deleted_count > 0
+
+
 async def fix_mongo_id(doc: Optional[dict]) -> Optional[dict]:
 
     if doc and "_id" in doc:
