@@ -83,3 +83,19 @@ export const deleteSongsFromPlaylistByID = async (
   }
   return false;
 };
+
+export const deletePlaylistByID = async (playlist_id: string) => {
+  const response = await axios.delete(
+    API_URL + "/playlists/playlist",
+    {
+      headers: {
+        Authorization: "Bearer " + getToken(),
+      },
+      params: { id: playlist_id },
+    },
+  );
+  if (response.status === 204) {
+    return true;
+  }
+  return false;
+};

@@ -1,4 +1,4 @@
-import { getPlaylistByID, deleteSongsFromPlaylistByID } from "@/lib/playlist";
+import { getPlaylistByID, deleteSongsFromPlaylistByID, deletePlaylistByID } from "@/lib/playlist";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
@@ -54,7 +54,7 @@ export default function Playlist() {
 
   const handleDeletePlaylist = async () => {
     if (!id) return;
-    const ok = await deleteSongsFromPlaylistByID(id, "");
+    const ok = await deletePlaylistByID(id);
     if (ok) {
       showToast("Playlist deleted", "success");
       navigate("/dashboard/playlists");
