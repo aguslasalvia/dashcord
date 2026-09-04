@@ -9,11 +9,11 @@ def get_audio_stream_url(video_id: str) -> Optional[str]:
         "noplaylist": True,
     }
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl: #pyright:ignore
             info = ydl.extract_info(
                 f"https://www.youtube.com/watch?v={video_id}",
                 download=False,
             )
-            return info["url"]
+            return info["url"] #pyright:ignore
     except Exception:
         return None

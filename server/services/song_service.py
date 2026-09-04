@@ -11,4 +11,4 @@ def search_songs(query: str, limit: int = 25):
 
 
 def get_stream_url(video_id: str):
-    return StreamUrlResponse(url=get_audio_stream_url(video_id))
+    return StreamUrlResponse(url=get_audio_stream_url(video_id)) #pyright:ignore
